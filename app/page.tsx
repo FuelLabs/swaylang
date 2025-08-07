@@ -20,6 +20,7 @@ import {
   Layers,
   Settings,
   Copy,
+  XIcon,
 } from "lucide-react"
 import Link from "next/link"
 
@@ -211,10 +212,14 @@ export default function SwayWebsite() {
             </div>
             <div className="flex items-center space-x-4">
               <Button variant="ghost" size="icon">
-                <Github className="h-5 w-5" />
+                <Link href="https://github.com/fuelLabs/sway" target="_blank" rel="noopener noreferrer">
+                  <Github className="h-5 w-5" />
+                </Link>
               </Button>
               <Button variant="ghost" size="icon">
-                <Twitter className="h-5 w-5" />
+                <Link href="https://x.com/swaylang" target="_blank" rel="noopener noreferrer">
+                  <XIcon className="h-5 w-5" />
+                </Link>
               </Button>
             </div>
           </div>
@@ -259,8 +264,10 @@ export default function SwayWebsite() {
               </Link>
             </Button>
             <Button size="lg" variant="outline" className="border-emerald-200 hover:bg-emerald-50 bg-transparent">
-              <Code className="mr-2 h-4 w-4" />
-              View Examples
+              <Link href="https://github.com/FuelLabs/sway-examples" className="flex items-center" target="_blank" rel="noopener noreferrer">
+                <Code className="mr-2 h-4 w-4" />
+                View Examples
+              </Link>
             </Button>
           </div>
 
@@ -524,9 +531,11 @@ export default function SwayWebsite() {
 
           <div className="mt-16 text-center">
             <Button size="lg" variant="outline" className="border-emerald-200 hover:bg-emerald-50 bg-transparent">
-              <BookOpen className="mr-2 h-4 w-4" />
-              Read the Sway Book
-              <ExternalLink className="ml-2 h-4 w-4" />
+              <Link href="https://docs.fuel.network/docs/sway/" className="flex items-center" target="_blank" rel="noopener noreferrer">
+                <BookOpen className="mr-2 h-4 w-4" />
+                Read the Sway Book
+                <ExternalLink className="ml-2 h-4 w-4" />
+              </Link>
             </Button>
           </div>
         </div>
@@ -572,10 +581,9 @@ export default function SwayWebsite() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <Badge variant="secondary">forc fmt</Badge>
+                  <Badge variant="secondary">forc call</Badge>
                   <Badge variant="secondary">forc test</Badge>
                   <Badge variant="secondary">forc deploy</Badge>
-                  <Badge variant="secondary">forc doc</Badge>
                 </div>
               </CardContent>
             </Card>
@@ -595,20 +603,20 @@ export default function SwayWebsite() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { name: "sway-std", description: "Standard library with core utilities", downloads: "12.5k" },
-              { name: "sway-libs", description: "Common patterns and data structures", downloads: "8.2k" },
-              { name: "asset-lib", description: "Asset management utilities", downloads: "5.1k" },
-              { name: "access-control", description: "Permission and role management", downloads: "4.8k" },
-              { name: "merkle-proof", description: "Merkle tree verification", downloads: "3.2k" },
-              { name: "oracle-lib", description: "Oracle integration helpers", downloads: "2.9k" },
+              { name: "Asset Library", description: "Asset management utilities", downloads: "5.1k" },
+              { name: "Pausable", description: "Emergency stop functionality", downloads: "5.1k" },
+              { name: "Signed Integers Library", description: "Signed integers for Sway", downloads: "5.1k" },
+              { name: "Reentrancy Guard Library", description: "Provides an API to check for reentrancy", downloads: "4.8k" },
+              { name: "Merkle", description: "Merkle tree verification", downloads: "3.2k" },
+              { name: "Upgradability Library", description: "Simple upgradability proxies", downloads: "2.9k" },
             ].map((lib, index) => (
               <Card key={index} className="hover:shadow-md transition-shadow border-gray-200">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">{lib.name}</CardTitle>
-                    <Badge variant="outline" className="text-xs">
+                    {/* <Badge variant="outline" className="text-xs">
                       {lib.downloads}
-                    </Badge>
+                    </Badge> */}
                   </div>
                   <CardDescription className="text-sm">{lib.description}</CardDescription>
                 </CardHeader>
@@ -703,7 +711,7 @@ export default function SwayWebsite() {
                   <h3 className="font-semibold text-lg">📥 Install Packages</h3>
                   <div className="bg-gray-900 rounded-lg p-4">
                     <code className="text-green-400 text-sm">
-                      forc add sway-libs --git https://github.com/FuelLabs/sway-libs
+                      forc add &lt;package-name&gt;
                     </code>
                   </div>
                 </div>
@@ -719,6 +727,7 @@ export default function SwayWebsite() {
 
               <div className="text-center">
                 <Button
+                  onClick={() => window.open("https://forc.pub/", "_blank")}
                   size="lg"
                   className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700"
                 >
@@ -746,38 +755,36 @@ export default function SwayWebsite() {
             <div>
               <h3 className="font-semibold mb-4">Language</h3>
               <div className="space-y-2 text-gray-400">
-                <div>Documentation</div>
-                <div>Examples</div>
-                <div>Playground</div>
+                <div><Link href="https://docs.fuel.network/docs/sway/" className="flex items-center" target="_blank" rel="noopener noreferrer">Documentation</Link></div>
+                <div><Link href="https://github.com/FuelLabs/sway-examples" className="flex items-center" target="_blank" rel="noopener noreferrer">Examples</Link></div>
+                <div><Link href="https://sway-playground.org/" className="flex items-center" target="_blank" rel="noopener noreferrer">Playground</Link></div>
               </div>
             </div>
 
             <div>
               <h3 className="font-semibold mb-4">Tools</h3>
               <div className="space-y-2 text-gray-400">
-                <div>Forc CLI</div>
-                <div>VS Code Extension</div>
-                <div>forc.pub Registry</div>
+                <div><Link href="https://github.com/FuelLabs/forc" className="flex items-center" target="_blank" rel="noopener noreferrer">Forc CLI</Link></div>
+                <div><Link href="https://docs.fuel.network/docs/sway/lsp/#sway-lsp" className="flex items-center" target="_blank" rel="noopener noreferrer">Sway LSP</Link></div>
+                <div><Link href="https://forc.pub/" className="flex items-center" target="_blank" rel="noopener noreferrer">Sway Registry</Link></div>
               </div>
             </div>
 
             <div>
               <h3 className="font-semibold mb-4">Community</h3>
               <div className="space-y-2 text-gray-400">
-                <div>GitHub</div>
-                <div>Twitter</div>
-                <div>Discord</div>
+                <div><Link href="https://docs.fuel.network/docs/forc/" className="flex items-center" target="_blank" rel="noopener noreferrer">GitHub</Link></div>
+                <div><Link href="https://x.com/swaylang" className="flex items-center" target="_blank" rel="noopener noreferrer">X</Link></div>
+                <div><Link href="https://forum.fuel.network/" className="flex items-center" target="_blank" rel="noopener noreferrer">Forum</Link></div>
               </div>
             </div>
           </div>
 
           <Separator className="my-8 bg-gray-700" />
 
-          <div className="flex flex-col md:flex-row justify-between items-center text-gray-400">
-            <div>© 2024 Sway Language. Part of the Fuel ecosystem.</div>
-            <div className="flex items-center space-x-4 mt-4 md:mt-0">
-              <span>Built with 🌴 and ❤️</span>
-            </div>
+          <div className="text-center text-gray-400">
+              <p>Built with 🌴 and ❤️</p>
+
           </div>
         </div>
       </footer>
