@@ -572,7 +572,17 @@ impl SRC3 for Contract {
                   className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700"
                   asChild
                 >
-                  <Link href="https://www.sway-playground.org/" target="_blank" rel="noopener noreferrer">
+                  <Link 
+                    href={
+                      selectedContract === "counter" 
+                        ? "https://www.sway-playground.org/?toolchain=testnet&transpile=false&gist=3db6631edc4ccf828ba869d22a32e132"
+                        : selectedContract === "singleAssetSrc20"
+                        ? "https://www.sway-playground.org/?toolchain=testnet&transpile=false&gist=d5b7964fdd9a8c6e90f220e32b4111a7"
+                        : "https://www.sway-playground.org/?toolchain=testnet&transpile=false&gist=98b11f6b02478b12ea579ef2c3391729"
+                    } 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
                     <span className="mr-2">🏄‍♂️</span>
                     Deploy with Sway Playground
                     <ExternalLink className="ml-2 h-4 w-4" />
