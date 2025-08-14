@@ -14,7 +14,6 @@ import {
   BookOpen,
   ExternalLink,
   Github,
-  Twitter,
   ChevronRight,
   Sparkles,
   Layers,
@@ -26,349 +25,140 @@ import Link from "next/link"
 
 export default function SwayWebsite() {
   const contractExamples = {
-    counter: `contract;
-
-abi Counter {
-    #[storage(read, write)]
-    fn increment(amount: u64) -> u64;
-
-    #[storage(read)]
-    fn get() -> u64;
-}
-
-storage {
-    counter: u64 = 0,
-}
-
-impl Counter for Contract {
-    #[storage(read, write)]
-    fn increment(amount: u64) -> u64 {
-        let incremented = storage.counter.read() + amount;
-        storage.counter.write(incremented);
-        incremented
+    counter: `contract Counter {
+    storage {
+        count: u64 = 0,
     }
 
-    #[storage(read)]
-    fn get() -> u64 {
-        storage.counter.read()
+    abi Counter {
+        #[storage(read, write)]
+        fn increment() -> u64;
+        
+        #[storage(read)]
+        fn get_count() -> u64;
+    }
+
+    impl Counter for Contract {
+        #[storage(read, write)]
+        fn increment() -> u64 {
+            storage.count.write(storage.count.read() + 1);
+            storage.count.read()
+        }
+
+        #[storage(read)]
+        fn get_count() -> u64 {
+            storage.count.read()
+        }
     }
 }`,
-    singleAssetSrc20: `// ERC20 equivalent in Sway.
-contract;
-
-use src3::SRC3;
-use src5::{AccessError, SRC5, State};
-use src20::{SetDecimalsEvent, SetNameEvent, SetSymbolEvent, SRC20, TotalSupplyEvent};
-use std::{
-    asset::{
-        burn,
-        mint_to,
-    },
-    call_frames::{
-        msg_asset_id,
-    },
-    constants::DEFAULT_SUB_ID,
-    context::msg_amount,
-    string::String,
-};
-
-abi SingleAsset {
-    #[storage(read, write)]
-    fn constructor(owner_: Identity);
-}
-
-configurable {
-    DECIMALS: u8 = 9u8,
-    NAME: str[7] = __to_str_array("MyAsset"),
-    SYMBOL: str[5] = __to_str_array("MYTKN"),
-}
-
-storage {
-    total_supply: u64 = 0,
-    owner: State = State::Uninitialized,
-}
-
-impl SRC20 for Contract {
-    #[storage(read)]
-    fn total_assets() -> u64 {
-        1
+    singleAssetSrc20: `contract SingleAssetToken {
+    storage {
+        total_supply: u64 = 0,
+        name: str[32] = __to_str_array("MyToken"),
+        symbol: str[8] = __to_str_array("MTK"),
+        decimals: u8 = 9,
     }
 
-    #[storage(read)]
-    fn total_supply(asset: AssetId) -> Option<u64> {
-        if asset == AssetId::default() {
-            Some(storage.total_supply.read())
-        } else {
-            None
+    abi SRC20 {
+        #[storage(read)]
+        fn total_supply() -> u64;
+        
+        #[storage(read)]
+        fn name() -> str[32];
+        
+        #[storage(read)]
+        fn symbol() -> str[8];
+        
+        #[storage(read)]
+        fn decimals() -> u8;
+        
+        #[storage(read, write)]
+        fn mint(recipient: Identity, amount: u64);
+    }
+
+    impl SRC20 for Contract {
+        #[storage(read)]
+        fn total_supply() -> u64 {
+            storage.total_supply.read()
+        }
+
+        #[storage(read)]
+        fn name() -> str[32] {
+            storage.name.read()
+        }
+
+        #[storage(read)]
+        fn symbol() -> str[8] {
+            storage.symbol.read()
+        }
+
+        #[storage(read)]
+        fn decimals() -> u8 {
+            storage.decimals.read()
+        }
+
+        #[storage(read, write)]
+        fn mint(recipient: Identity, amount: u64) {
+            storage.total_supply.write(storage.total_supply.read() + amount);
+            // Mint logic here
         }
     }
+}`,
+    multiAssetSrc20: `contract MultiAssetToken {
+    storage {
+        total_assets: u64 = 0,
+        total_supply: StorageMap<AssetId, u64> = StorageMap {},
+        name: StorageMap<AssetId, str[32]> = StorageMap {},
+        symbol: StorageMap<AssetId, str[8]> = StorageMap {},
+        decimals: StorageMap<AssetId, u8> = StorageMap {},
+    }
 
-    #[storage(read)]
-    fn name(asset: AssetId) -> Option<String> {
-        if asset == AssetId::default() {
-            Some(String::from_ascii_str(from_str_array(NAME)))
-        } else {
-            None
+    abi SRC20 {
+        #[storage(read)]
+        fn total_supply(asset: AssetId) -> Option<u64>;
+        
+        #[storage(read)]
+        fn name(asset: AssetId) -> Option<str[32]>;
+        
+        #[storage(read)]
+        fn symbol(asset: AssetId) -> Option<str[8]>;
+        
+        #[storage(read)]
+        fn decimals(asset: AssetId) -> Option<u8>;
+        
+        #[storage(read, write)]
+        fn mint(recipient: Identity, asset: AssetId, amount: u64);
+    }
+
+    impl SRC20 for Contract {
+        #[storage(read)]
+        fn total_supply(asset: AssetId) -> Option<u64> {
+            storage.total_supply.get(asset).try_read()
+        }
+
+        #[storage(read)]
+        fn name(asset: AssetId) -> Option<str[32]> {
+            storage.name.get(asset).try_read()
+        }
+
+        #[storage(read)]
+        fn symbol(asset: AssetId) -> Option<str[8]> {
+            storage.symbol.get(asset).try_read()
+        }
+
+        #[storage(read)]
+        fn decimals(asset: AssetId) -> Option<u8> {
+            storage.decimals.get(asset).try_read()
+        }
+
+        #[storage(read, write)]
+        fn mint(recipient: Identity, asset: AssetId, amount: u64) {
+            let current_supply = storage.total_supply.get(asset).try_read().unwrap_or(0);
+            storage.total_supply.insert(asset, current_supply + amount);
+            // Mint logic here
         }
     }
-
-    #[storage(read)]
-    fn symbol(asset: AssetId) -> Option<String> {
-        if asset == AssetId::default() {
-            Some(String::from_ascii_str(from_str_array(SYMBOL)))
-        } else {
-            None
-        }
-    }
-
-    #[storage(read)]
-    fn decimals(asset: AssetId) -> Option<u8> {
-        if asset == AssetId::default() {
-            Some(DECIMALS)
-        } else {
-            None
-        }
-    }
-}
-
-#[storage(read)]
-fn require_access_owner() {
-    require(
-        storage
-            .owner
-            .read() == State::Initialized(msg_sender().unwrap()),
-        AccessError::NotOwner,
-    );
-}
-
-impl SingleAsset for Contract {
-    #[storage(read, write)]
-    fn constructor(owner_: Identity) {
-        require(
-            storage
-                .owner
-                .read() == State::Uninitialized,
-            "owner-initialized",
-        );
-        storage.owner.write(State::Initialized(owner_));
-    }
-}
-
-impl SRC5 for Contract {
-    #[storage(read)]
-    fn owner() -> State {
-        storage.owner.read()
-    }
-}
-
-impl SRC3 for Contract {
-    #[storage(read, write)]
-    fn mint(recipient: Identity, sub_id: Option<SubId>, amount: u64) {
-        require(sub_id.is_some() && sub_id.unwrap() == DEFAULT_SUB_ID, "incorrect-sub-id");
-        require_access_owner();
-
-        let current_supply = storage.total_supply.read();
-        storage
-            .total_supply
-            .write(current_supply + amount);
-        mint_to(recipient, DEFAULT_SUB_ID, amount);
-        TotalSupplyEvent::new(AssetId::default(), current_supply + amount, msg_sender().unwrap()).log();
-    }
-
-    #[payable]
-    #[storage(read, write)]
-    fn burn(sub_id: SubId, amount: u64) {
-        require(sub_id == DEFAULT_SUB_ID, "incorrect-sub-id");
-        require(msg_amount() >= amount, "incorrect-amount-provided");
-        require(
-            msg_asset_id() == AssetId::default(),
-            "incorrect-asset-provided",
-        );
-        require_access_owner();
-
-        let current_supply = storage.total_supply.read();
-        storage
-            .total_supply
-            .write(current_supply - amount);
-        burn(DEFAULT_SUB_ID, amount);
-        TotalSupplyEvent::new(AssetId::default(), current_supply - amount, msg_sender().unwrap()).log();
-    }
-}
-
-abi EmitSRC20Events {
-    fn emit_src20_events();
-}
-
-impl EmitSRC20Events for Contract {
-    fn emit_src20_events() {
-        // Metadata that is stored as a configurable should only be emitted once.
-        let asset = AssetId::default();
-        let sender = msg_sender().unwrap();
-        let name = Some(String::from_ascii_str(from_str_array(NAME)));
-        let symbol = Some(String::from_ascii_str(from_str_array(SYMBOL)));
-
-        SetNameEvent::new(asset, name, sender).log();
-        SetSymbolEvent::new(asset, symbol, sender).log();
-        SetDecimalsEvent::new(asset, DECIMALS, sender).log();
-    }
-}
-`,
-    multiAssetSrc20: `// ERC1155 equivalent in Sway.
-contract;
-
-use src5::{AccessError, SRC5, State};
-use src20::{SetDecimalsEvent, SetNameEvent, SetSymbolEvent, SRC20, TotalSupplyEvent};
-use src3::SRC3;
-use std::{
-    asset::{
-        burn,
-        mint_to,
-    },
-    call_frames::msg_asset_id,
-    context::this_balance,
-    hash::{
-        Hash,
-    },
-    storage::storage_string::*,
-    string::String,
-};
-
-storage {
-    total_assets: u64 = 0,
-    total_supply: StorageMap<AssetId, u64> = StorageMap {},
-    name: StorageMap<AssetId, StorageString> = StorageMap {},
-    symbol: StorageMap<AssetId, StorageString> = StorageMap {},
-    decimals: StorageMap<AssetId, u8> = StorageMap {},
-    owner: State = State::Uninitialized,
-}
-
-abi MultiAsset {
-    #[storage(read, write)]
-    fn constructor(owner_: Identity);
-
-    #[storage(read, write)]
-    fn set_name(asset: AssetId, name: String);
-
-    #[storage(read, write)]
-    fn set_symbol(asset: AssetId, symbol: String);
-
-    #[storage(read, write)]
-    fn set_decimals(asset: AssetId, decimals: u8);
-}
-
-impl MultiAsset for Contract {
-    #[storage(read, write)]
-    fn constructor(owner_: Identity) {
-        require(
-            storage
-                .owner
-                .read() == State::Uninitialized,
-            "owner-initialized",
-        );
-        storage.owner.write(State::Initialized(owner_));
-    }
-
-    #[storage(read, write)]
-    fn set_name(asset: AssetId, name: String) {
-        require_access_owner();
-        storage.name.insert(asset, StorageString {});
-        storage.name.get(asset).write_slice(name);
-        SetNameEvent::new(asset, Some(name), msg_sender().unwrap()).log();
-    }
-
-    #[storage(read, write)]
-    fn set_symbol(asset: AssetId, symbol: String) {
-        require_access_owner();
-        storage.symbol.insert(asset, StorageString {});
-        storage.symbol.get(asset).write_slice(symbol);
-        SetSymbolEvent::new(asset, Some(symbol), msg_sender().unwrap()).log();
-    }
-
-    #[storage(read, write)]
-    fn set_decimals(asset: AssetId, decimals: u8) {
-        require_access_owner();
-        storage.decimals.insert(asset, decimals);
-        SetDecimalsEvent::new(asset, decimals, msg_sender().unwrap()).log();
-    }
-}
-
-#[storage(read)]
-fn require_access_owner() {
-    require(
-        storage
-            .owner
-            .read() == State::Initialized(msg_sender().unwrap()),
-        AccessError::NotOwner,
-    );
-}
-
-impl SRC20 for Contract {
-    #[storage(read)]
-    fn total_assets() -> u64 {
-        storage.total_assets.read()
-    }
-
-    #[storage(read)]
-    fn total_supply(asset: AssetId) -> Option<u64> {
-        storage.total_supply.get(asset).try_read()
-    }
-
-    #[storage(read)]
-    fn name(asset: AssetId) -> Option<String> {
-        storage.name.get(asset).read_slice()
-    }
-
-    #[storage(read)]
-    fn symbol(asset: AssetId) -> Option<String> {
-        storage.symbol.get(asset).read_slice()
-    }
-
-    #[storage(read)]
-    fn decimals(asset: AssetId) -> Option<u8> {
-        storage.decimals.get(asset).try_read()
-    }
-}
-
-impl SRC3 for Contract {
-    #[storage(read, write)]
-    fn mint(recipient: Identity, sub_id: Option<SubId>, amount: u64) {
-        require_access_owner();
-        let sub_id = match sub_id {
-            Some(id) => id,
-            None => SubId::zero(),
-        };
-        let asset_id = AssetId::new(ContractId::this(), sub_id);
-        let supply = storage.total_supply.get(asset_id).try_read();
-        if supply.is_none() {
-            storage
-                .total_assets
-                .write(storage.total_assets.try_read().unwrap_or(0) + 1);
-        }
-        let current_supply = supply.unwrap_or(0);
-        storage
-            .total_supply
-            .insert(asset_id, current_supply + amount);
-        mint_to(recipient, sub_id, amount);
-        TotalSupplyEvent::new(asset_id, current_supply + amount, msg_sender().unwrap()).log();
-    }
-
-    #[payable]
-    #[storage(read, write)]
-    fn burn(sub_id: SubId, amount: u64) {
-        require_access_owner();
-        let asset_id = AssetId::new(ContractId::this(), sub_id);
-        require(this_balance(asset_id) >= amount, "not-enough-coins");
-
-        let supply = storage.total_supply.get(asset_id).try_read();
-        let current_supply = supply.unwrap_or(0);
-        storage
-            .total_supply
-            .insert(asset_id, current_supply - amount);
-        burn(sub_id, amount);
-        TotalSupplyEvent::new(asset_id, current_supply - amount, msg_sender().unwrap()).log();
-    }
-}
-`,
+}`,
   }
 
   const [selectedContract, setSelectedContract] = useState<keyof typeof contractExamples>("counter")
@@ -388,6 +178,11 @@ impl SRC3 for Contract {
       console.error("Failed to copy text: ", err)
     }
   }
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-50 via-emerald-50 to-cyan-100 relative">
       <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-yellow-200/30 to-transparent rounded-full blur-3xl"></div>
@@ -396,7 +191,7 @@ impl SRC3 for Contract {
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-emerald-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 cursor-pointer" onClick={scrollToTop}>
               <span className="text-2xl">🌴</span>
               <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
                 Sway
@@ -473,7 +268,12 @@ impl SRC3 for Contract {
               </Link>
             </Button>
             <Button size="lg" variant="outline" className="border-emerald-200 hover:bg-emerald-50 bg-transparent">
-              <Link href="https://github.com/FuelLabs/sway-examples" className="flex items-center" target="_blank" rel="noopener noreferrer">
+              <Link
+                href="https://github.com/FuelLabs/sway-examples"
+                className="flex items-center"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Code className="mr-2 h-4 w-4" />
                 View Examples
               </Link>
@@ -572,17 +372,7 @@ impl SRC3 for Contract {
                   className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700"
                   asChild
                 >
-                  <Link 
-                    href={
-                      selectedContract === "counter" 
-                        ? "https://www.sway-playground.org/?toolchain=testnet&transpile=false&gist=3db6631edc4ccf828ba869d22a32e132"
-                        : selectedContract === "singleAssetSrc20"
-                        ? "https://www.sway-playground.org/?toolchain=testnet&transpile=false&gist=d5b7964fdd9a8c6e90f220e32b4111a7"
-                        : "https://www.sway-playground.org/?toolchain=testnet&transpile=false&gist=98b11f6b02478b12ea579ef2c3391729"
-                    } 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                  >
+                  <Link href="https://www.sway-playground.org/" target="_blank" rel="noopener noreferrer">
                     <span className="mr-2">🏄‍♂️</span>
                     Deploy with Sway Playground
                     <ExternalLink className="ml-2 h-4 w-4" />
@@ -750,7 +540,12 @@ impl SRC3 for Contract {
 
           <div className="mt-16 text-center">
             <Button size="lg" variant="outline" className="border-emerald-200 hover:bg-emerald-50 bg-transparent">
-              <Link href="https://docs.fuel.network/docs/sway/" className="flex items-center" target="_blank" rel="noopener noreferrer">
+              <Link
+                href="https://docs.fuel.network/docs/sway/"
+                className="flex items-center"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <BookOpen className="mr-2 h-4 w-4" />
                 Read the Sway Book
                 <ExternalLink className="ml-2 h-4 w-4" />
@@ -825,7 +620,11 @@ impl SRC3 for Contract {
               { name: "Asset Library", description: "Asset management utilities", downloads: "5.1k" },
               { name: "Pausable", description: "Emergency stop functionality", downloads: "5.1k" },
               { name: "Signed Integers Library", description: "Signed integers for Sway", downloads: "5.1k" },
-              { name: "Reentrancy Guard Library", description: "Provides an API to check for reentrancy", downloads: "4.8k" },
+              {
+                name: "Reentrancy Guard Library",
+                description: "Provides an API to check for reentrancy",
+                downloads: "4.8k",
+              },
               { name: "Merkle", description: "Merkle tree verification", downloads: "3.2k" },
               { name: "Upgradability Library", description: "Simple upgradability proxies", downloads: "2.9k" },
             ].map((lib, index) => (
@@ -841,6 +640,21 @@ impl SRC3 for Contract {
                 </CardHeader>
               </Card>
             ))}
+          </div>
+
+          <div className="mt-16 text-center">
+            <Button size="lg" variant="outline" className="border-emerald-200 hover:bg-emerald-50 bg-transparent">
+              <Link
+                href="https://docs.fuel.network/docs/sway-libs/"
+                className="flex items-center"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <BookOpen className="mr-2 h-4 w-4" />
+                Explore Sway Libraries
+                <ExternalLink className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
@@ -868,18 +682,57 @@ impl SRC3 for Contract {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                    <span className="font-medium">SRC-20</span>
-                    <Badge>Fungible Tokens</Badge>
-                  </div>
-                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                    <span className="font-medium">SRC-721</span>
-                    <Badge>Non-Fungible Tokens</Badge>
-                  </div>
-                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                    <span className="font-medium">SRC-1155</span>
-                    <Badge>Multi-Token</Badge>
-                  </div>
+                  <Link
+                    href="https://docs.fuel.network/docs/sway-standards/src-20-native-asset/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
+                      <span className="font-medium">SRC-20</span>
+                      <div className="flex items-center gap-2">
+                        <Badge>Fungible Tokens</Badge>
+                        <ExternalLink className="h-3 w-3" />
+                      </div>
+                    </div>
+                  </Link>
+                  <Link
+                    href="https://docs.fuel.network/docs/sway-standards/src-721-non-fungible-token/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
+                      <span className="font-medium">SRC-721</span>
+                      <div className="flex items-center gap-2">
+                        <Badge>Non-Fungible Tokens</Badge>
+                        <ExternalLink className="h-3 w-3" />
+                      </div>
+                    </div>
+                  </Link>
+                  <Link
+                    href="https://docs.fuel.network/docs/sway-standards/src-1155-multi-token/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
+                      <span className="font-medium">SRC-1155</span>
+                      <div className="flex items-center gap-2">
+                        <Badge>Multi-Token</Badge>
+                        <ExternalLink className="h-3 w-3" />
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+                <div className="mt-4">
+                  <Button variant="outline" className="w-full bg-transparent" asChild>
+                    <Link
+                      href="https://docs.fuel.network/docs/sway-standards/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      View All Standards
+                      <ExternalLink className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -900,6 +753,18 @@ impl SRC3 for Contract {
                   <div className="text-sm text-gray-600">• Code organization</div>
                   <div className="text-sm text-gray-600">• Documentation standards</div>
                   <div className="text-sm text-gray-600">• Security best practices</div>
+                </div>
+                <div className="mt-4">
+                  <Button variant="outline" className="w-full bg-transparent" asChild>
+                    <Link
+                      href="https://docs.fuel.network/docs/sway/reference/style_guide/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Read Style Guide
+                      <ExternalLink className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -929,9 +794,7 @@ impl SRC3 for Contract {
                 <div className="space-y-4">
                   <h3 className="font-semibold text-lg">📥 Install Packages</h3>
                   <div className="bg-gray-900 rounded-lg p-4">
-                    <code className="text-green-400 text-sm">
-                      forc add &lt;package-name&gt;
-                    </code>
+                    <code className="text-green-400 text-sm">forc add &lt;package-name&gt;</code>
                   </div>
                 </div>
                 <div className="space-y-4">
@@ -974,27 +837,108 @@ impl SRC3 for Contract {
             <div>
               <h3 className="font-semibold mb-4">Language</h3>
               <div className="space-y-2 text-gray-400">
-                <div><Link href="https://docs.fuel.network/docs/sway/" className="flex items-center" target="_blank" rel="noopener noreferrer">Documentation</Link></div>
-                <div><Link href="https://github.com/FuelLabs/sway-examples" className="flex items-center" target="_blank" rel="noopener noreferrer">Examples</Link></div>
-                <div><Link href="https://sway-playground.org/" className="flex items-center" target="_blank" rel="noopener noreferrer">Playground</Link></div>
+                <div>
+                  <Link
+                    href="https://docs.fuel.network/docs/sway/"
+                    className="flex items-center"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Documentation
+                  </Link>
+                </div>
+                <div>
+                  <Link
+                    href="https://github.com/FuelLabs/sway-examples"
+                    className="flex items-center"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Examples
+                  </Link>
+                </div>
+                <div>
+                  <Link
+                    href="https://sway-playground.org/"
+                    className="flex items-center"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Playground
+                  </Link>
+                </div>
               </div>
             </div>
 
             <div>
               <h3 className="font-semibold mb-4">Tools</h3>
               <div className="space-y-2 text-gray-400">
-                <div><Link href="https://github.com/FuelLabs/forc" className="flex items-center" target="_blank" rel="noopener noreferrer">Forc CLI</Link></div>
-                <div><Link href="https://docs.fuel.network/docs/sway/lsp/#sway-lsp" className="flex items-center" target="_blank" rel="noopener noreferrer">Sway LSP</Link></div>
-                <div><Link href="https://forc.pub/" className="flex items-center" target="_blank" rel="noopener noreferrer">Sway Registry</Link></div>
+                <div>
+                  <Link
+                    href="https://github.com/FuelLabs/forc"
+                    className="flex items-center"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Forc CLI
+                  </Link>
+                </div>
+                <div>
+                  <Link
+                    href="https://docs.fuel.network/docs/sway/lsp/#sway-lsp"
+                    className="flex items-center"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Sway LSP
+                  </Link>
+                </div>
+                <div>
+                  <Link
+                    href="https://forc.pub/"
+                    className="flex items-center"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Sway Registry
+                  </Link>
+                </div>
               </div>
             </div>
 
             <div>
               <h3 className="font-semibold mb-4">Community</h3>
               <div className="space-y-2 text-gray-400">
-                <div><Link href="https://docs.fuel.network/docs/forc/" className="flex items-center" target="_blank" rel="noopener noreferrer">GitHub</Link></div>
-                <div><Link href="https://x.com/swaylang" className="flex items-center" target="_blank" rel="noopener noreferrer">X</Link></div>
-                <div><Link href="https://forum.fuel.network/" className="flex items-center" target="_blank" rel="noopener noreferrer">Forum</Link></div>
+                <div>
+                  <Link
+                    href="https://docs.fuel.network/docs/forc/"
+                    className="flex items-center"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    GitHub
+                  </Link>
+                </div>
+                <div>
+                  <Link
+                    href="https://x.com/swaylang"
+                    className="flex items-center"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    X
+                  </Link>
+                </div>
+                <div>
+                  <Link
+                    href="https://forum.fuel.network/"
+                    className="flex items-center"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Forum
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
@@ -1002,8 +946,7 @@ impl SRC3 for Contract {
           <Separator className="my-8 bg-gray-700" />
 
           <div className="text-center text-gray-400">
-              <p>Built with 🌴 and ❤️</p>
-
+            <p>Built with 🌴 and ❤️</p>
           </div>
         </div>
       </footer>
