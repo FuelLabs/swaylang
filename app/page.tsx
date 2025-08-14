@@ -14,12 +14,12 @@ import {
   BookOpen,
   ExternalLink,
   Github,
+  Twitter,
   ChevronRight,
   Sparkles,
   Layers,
   Settings,
   Copy,
-  XIcon,
 } from "lucide-react"
 import Link from "next/link"
 
@@ -222,7 +222,7 @@ export default function SwayWebsite() {
               </Button>
               <Button variant="ghost" size="icon">
                 <Link href="https://x.com/swaylang" target="_blank" rel="noopener noreferrer">
-                  <XIcon className="h-5 w-5" />
+                  <Twitter className="h-5 w-5" />
                 </Link>
               </Button>
             </div>
@@ -926,7 +926,7 @@ export default function SwayWebsite() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    X
+                    Twitter
                   </Link>
                 </div>
                 <div>
