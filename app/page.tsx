@@ -13,16 +13,15 @@ import {
   Package,
   BookOpen,
   ExternalLink,
-  Github,
-  Twitter,
   ChevronRight,
   Sparkles,
   Layers,
   Settings,
   Copy,
-  XIcon,
 } from "lucide-react"
 import Link from "next/link"
+
+import { siGithub, siX } from "simple-icons"
 
 export default function SwayWebsite() {
   const contractExamples = {
@@ -426,12 +425,12 @@ impl SRC3 for Contract {
             <div className="flex items-center space-x-4">
               <Button variant="ghost" size="icon">
                 <Link href="https://github.com/fuelLabs/sway" target="_blank" rel="noopener noreferrer">
-                  <Github className="h-5 w-5" />
+                  <div className="h-5 w-5" dangerouslySetInnerHTML={{ __html: siGithub.svg }} />
                 </Link>
               </Button>
               <Button variant="ghost" size="icon">
                 <Link href="https://x.com/swaylang" target="_blank" rel="noopener noreferrer">
-                  <XIcon className="h-5 w-5" />
+                  <div className="h-5 w-5" dangerouslySetInnerHTML={{ __html: siX.svg }} />
                 </Link>
               </Button>
             </div>
@@ -691,7 +690,7 @@ impl SRC3 for Contract {
                   asChild
                 >
                   <Link href="https://github.com/ourovoros-io/charcoal" target="_blank" rel="noopener noreferrer">
-                    <Github className="mr-2 h-4 w-4" />
+                    <div className="mr-2 h-4 w-4" dangerouslySetInnerHTML={{ __html: siGithub.svg }} />
                     View on GitHub
                     <ExternalLink className="ml-2 h-4 w-4" />
                   </Link>
