@@ -388,6 +388,10 @@ impl SRC3 for Contract {
       console.error("Failed to copy text: ", err)
     }
   }
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-50 via-emerald-50 to-cyan-100 relative">
       <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-yellow-200/30 to-transparent rounded-full blur-3xl"></div>
@@ -396,7 +400,7 @@ impl SRC3 for Contract {
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-emerald-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 cursor-pointer" onClick={scrollToTop}>
               <span className="text-2xl">🌴</span>
               <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
                 Sway
@@ -720,9 +724,9 @@ impl SRC3 for Contract {
             <Card className="border-emerald-200 hover:shadow-lg transition-shadow">
               <CardHeader>
                 <Shield className="h-8 w-8 text-emerald-600 mb-2" />
-                <CardTitle>Memory Safe</CardTitle>
+                <CardTitle>Type Safe</CardTitle>
                 <CardDescription>
-                  Built-in memory safety without garbage collection, inspired by Rust's ownership model.
+                  Expressive type system with generics, algebraic types, and compile-time safety checks such as the CEI pattern.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -842,6 +846,20 @@ impl SRC3 for Contract {
               </Card>
             ))}
           </div>
+          <div className="mt-16 text-center">
+            <Button size="lg" variant="outline" className="border-emerald-200 hover:bg-emerald-50 bg-transparent">
+              <Link
+                href="https://docs.fuel.network/docs/sway-libs/"
+                className="flex items-center"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <BookOpen className="mr-2 h-4 w-4" />
+                Explore Sway Libraries
+                <ExternalLink className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
         </div>
       </section>
 
@@ -868,18 +886,57 @@ impl SRC3 for Contract {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                    <span className="font-medium">SRC-20</span>
-                    <Badge>Fungible Tokens</Badge>
-                  </div>
-                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                    <span className="font-medium">SRC-721</span>
-                    <Badge>Non-Fungible Tokens</Badge>
-                  </div>
-                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                    <span className="font-medium">SRC-1155</span>
-                    <Badge>Multi-Token</Badge>
-                  </div>
+                  <Link
+                    href="https://docs.fuel.network/docs/sway-standards/src-20-native-asset/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
+                      <span className="font-medium">SRC-20</span>
+                      <div className="flex items-center gap-2">
+                        <Badge>Fungible Tokens</Badge>
+                        <ExternalLink className="h-3 w-3" />
+                      </div>
+                    </div>
+                  </Link>
+                  <Link
+                    href="https://docs.fuel.network/docs/sway-standards/src-721-non-fungible-token/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
+                      <span className="font-medium">SRC-721</span>
+                      <div className="flex items-center gap-2">
+                        <Badge>Non-Fungible Tokens</Badge>
+                        <ExternalLink className="h-3 w-3" />
+                      </div>
+                    </div>
+                  </Link>
+                  <Link
+                    href="https://docs.fuel.network/docs/sway-standards/src-1155-multi-token/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
+                      <span className="font-medium">SRC-1155</span>
+                      <div className="flex items-center gap-2">
+                        <Badge>Multi-Token</Badge>
+                        <ExternalLink className="h-3 w-3" />
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+                <div className="mt-4">
+                  <Button variant="outline" className="w-full bg-transparent" asChild>
+                    <Link
+                      href="https://docs.fuel.network/docs/sway-standards/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      View All Standards
+                      <ExternalLink className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -895,11 +952,23 @@ impl SRC3 for Contract {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2">
+                <div className="space-y-5 flex flex-col justify-between">
                   <div className="text-sm text-gray-600">• Naming conventions</div>
                   <div className="text-sm text-gray-600">• Code organization</div>
                   <div className="text-sm text-gray-600">• Documentation standards</div>
                   <div className="text-sm text-gray-600">• Security best practices</div>
+                </div>
+                <div className="mt-5">
+                  <Button variant="outline" className="w-full bg-transparent" asChild>
+                    <Link
+                      href="https://docs.fuel.network/docs/sway/reference/style_guide/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Read Style Guide
+                      <ExternalLink className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
                 </div>
               </CardContent>
             </Card>
