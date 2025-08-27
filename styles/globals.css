@@ -92,3 +92,47 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Override Prism.js background colors with maximum specificity */
+pre[class*="language-"],
+pre.language-rust,
+pre.language-javascript,
+pre.language-typescript,
+pre.language-html,
+pre.language-css {
+  background: #111827 !important;
+  background-color: #111827 !important;
+}
+
+code[class*="language-"],
+code.language-rust,
+code.language-javascript,
+code.language-typescript,
+code.language-html,
+code.language-css {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Target Prism.js specific classes that get added automatically */
+pre[class*="language-"] > code[class*="language-"] {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Use CSS custom properties to override Prism.js */
+:root {
+  --prism-background: #111827 !important;
+  --prism-code-background: transparent !important;
+}
+
+/* Force override with !important and CSS custom properties */
+pre[class*="language-"] {
+  background: var(--prism-background) !important;
+  background-color: var(--prism-background) !important;
+}
+
+code[class*="language-"] {
+  background: var(--prism-code-background) !important;
+  background-color: var(--prism-code-background) !important;
+}

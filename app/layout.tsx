@@ -6,10 +6,13 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Sway - Smart Contract Language of the Future",
+  title: "Sway - Smart contract language of the future",
   description: "Safe, fast, and expressive smart contract language inspired by Rust. Built for the Fuel ecosystem.",
   icons: {
-    icon: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 fontSize=%2290%22>🌴</text></svg>",
+    icon: [
+      { url: "/sway-light.png", media: "(prefers-color-scheme: light)" },
+      { url: "/sway-dark.png", media: "(prefers-color-scheme: dark)" },
+    ],
   },
 }
 
