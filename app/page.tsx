@@ -28,7 +28,8 @@ import { siGithub, siX } from "simple-icons"
 
 export default function SwayWebsite() {
   const contractExamples = {
-    counter: `contract;
+    counter: {
+      display: `contract;
 
 abi Counter {
     #[storage(read, write)]
@@ -55,7 +56,185 @@ impl Counter for Contract {
         storage.counter.read()
     }
 }`,
-    singleAssetSrc20: `// ERC20 equivalent in Sway.
+      copy: `contract;
+
+abi Counter {
+    #[storage(read, write)]
+    fn increment(amount: u64) -> u64;
+
+    #[storage(read)]
+    fn get() -> u64;
+}
+
+storage {
+    counter: u64 = 0,
+}
+
+impl Counter for Contract {
+    #[storage(read, write)]
+    fn increment(amount: u64) -> u64 {
+        let incremented = storage.counter.read() + amount;
+        storage.counter.write(incremented);
+        incremented
+    }
+
+    #[storage(read)]
+    fn get() -> u64 {
+        storage.counter.read()
+    }
+}`
+    },
+    singleAssetSrc20: {
+      display: `// ERC20 equivalent in Sway.
+contract;
+
+use src3::*;
+use src5::*;
+use src20::*;
+use std::{asset::*, ***, ***};
+
+abi SingleAsset {
+    #[storage(read, write)]
+    fn constructor(owner_: Identity);
+}
+
+configurable {
+    DECIMALS: u8 = 9u8,
+    NAME: str[7] = __to_str_array("MyAsset"),
+    SYMBOL: str[5] = __to_str_array("MYTKN"),
+}
+
+storage {
+    total_supply: u64 = 0,
+    owner: State = State::Uninitialized,
+}
+
+impl SRC20 for Contract {
+    #[storage(read)]
+    fn total_assets() -> u64 {
+        1
+    }
+
+    #[storage(read)]
+    fn total_supply(asset: AssetId) -> Option<u64> {
+        if asset == AssetId::default() {
+            Some(storage.total_supply.read())
+        } else {
+            None
+        }
+    }
+
+    #[storage(read)]
+    fn name(asset: AssetId) -> Option<String> {
+        if asset == AssetId::default() {
+            Some(String::from_ascii_str(from_str_array(NAME)))
+        } else {
+            None
+        }
+    }
+
+    #[storage(read)]
+    fn symbol(asset: AssetId) -> Option<String> {
+        if asset == AssetId::default() {
+            Some(String::from_ascii_str(from_str_array(SYMBOL)))
+        } else {
+            None
+        }
+    }
+
+    #[storage(read)]
+    fn decimals(asset: AssetId) -> Option<u8> {
+        if asset == AssetId::default() {
+            Some(DECIMALS)
+        } else {
+            None
+        }
+    }
+}
+
+#[storage(read)]
+fn require_access_owner() {
+    require(
+        storage
+            .owner
+            .read() == State::Initialized(msg_sender().unwrap()),
+        AccessError::NotOwner,
+    );
+}
+
+impl SingleAsset for Contract {
+    #[storage(read, write)]
+    fn constructor(owner_: Identity) {
+        require(
+            storage
+                .owner
+                .read() == State::Uninitialized,
+            "owner-initialized",
+        );
+        storage.owner.write(State::Initialized(owner_));
+    }
+}
+
+impl SRC5 for Contract {
+    #[storage(read)]
+    fn owner() -> State {
+        storage.owner.read()
+    }
+}
+
+impl SRC3 for Contract {
+    #[storage(read, write)]
+    fn mint(recipient: Identity, sub_id: Option<SubId>, amount: u64) {
+        require(sub_id.is_some() && sub_id.unwrap() == DEFAULT_SUB_ID, "incorrect-sub-id");
+        require_access_owner();
+
+        let current_supply = storage.total_supply.read();
+        storage
+            .total_supply
+            .write(current_supply + amount);
+        mint_to(recipient, DEFAULT_SUB_ID, amount);
+        TotalSupplyEvent::new(AssetId::default(), current_supply + amount, msg_sender().unwrap()).log();
+    }
+
+    #[payable]
+    #[storage(read, write)]
+    fn burn(sub_id: SubId, amount: u64) {
+        require(sub_id == DEFAULT_SUB_ID, "incorrect-sub-id");
+        require(msg_amount() >= amount, "incorrect-amount-provided");
+        require(
+            msg_asset_id() == AssetId::default(),
+            "incorrect-asset-provided",
+        );
+        require_access_owner();
+
+        let current_supply = storage.total_supply.read();
+        storage
+            .total_supply
+            .write(current_supply - amount);
+        burn(DEFAULT_SUB_ID, amount);
+        TotalSupplyEvent::new(AssetId::default(), current_supply - amount, msg_sender().unwrap()).log();
+    }
+}
+
+abi EmitSRC20Events {
+    fn emit_src20_events();
+}
+
+impl EmitSRC20Events for Contract {
+    fn emit_src20_events() {
+        // Metadata that is stored as a configurable should only be emitted once.
+        let asset = AssetId::default();
+        let sender = msg_sender().unwrap();
+        let name = Some(String::from_ascii_str(from_str_array(NAME)));
+        let symbol = Some(String::from_ascii_str(from_str_array(SYMBOL)));
+
+        SetNameEvent::new(asset, name, sender).log();
+        SetSymbolEvent::new(asset, symbol, sender).log();
+        SetDecimalsEvent::new(asset, DECIMALS, sender).log();
+    }
+}
+`,
+      copy: `// ERC20 equivalent in Sway.
 contract;
 
 use src3::SRC3;
@@ -214,8 +393,154 @@ impl EmitSRC20Events for Contract {
         SetDecimalsEvent::new(asset, DECIMALS, sender).log();
     }
 }
+`
+    },
+    multiAssetSrc20: {
+      display: `// ERC1155 equivalent in Sway.
+contract;
+
+use src3::*;
+use src5::*;
+use src20::*;
+use std::{asset::*, ***, ***};
+
+storage {
+    total_assets: u64 = 0,
+    total_supply: StorageMap<AssetId, u64> = StorageMap {},
+    name: StorageMap<AssetId, StorageString> = StorageMap {},
+    symbol: StorageMap<AssetId, StorageString> = StorageMap {},
+    decimals: StorageMap<AssetId, u8> = StorageMap {},
+    owner: State = State::Uninitialized,
+}
+
+abi MultiAsset {
+    #[storage(read, write)]
+    fn constructor(owner_: Identity);
+
+    #[storage(read, write)]
+    fn set_name(asset: AssetId, name: String);
+
+    #[storage(read, write)]
+    fn set_symbol(asset: AssetId, symbol: String);
+
+    #[storage(read, write)]
+    fn set_decimals(asset: AssetId, decimals: u8);
+}
+
+impl MultiAsset for Contract {
+    #[storage(read, write)]
+    fn constructor(owner_: Identity) {
+        require(
+            storage
+                .owner
+                .read() == State::Uninitialized,
+            "owner-initialized",
+        );
+        storage.owner.write(State::Initialized(owner_));
+    }
+
+    #[storage(read, write)]
+    fn set_name(asset: AssetId, name: String) {
+        require_access_owner();
+        storage.name.insert(asset, StorageString {});
+        storage.name.get(asset).write_slice(name);
+        SetNameEvent::new(asset, Some(name), msg_sender().unwrap()).log();
+    }
+
+    #[storage(read, write)]
+    fn set_symbol(asset: AssetId, symbol: String) {
+        require_access_owner();
+        storage.symbol.insert(asset, StorageString {});
+        storage.symbol.get(asset).write_slice(symbol);
+        SetSymbolEvent::new(asset, Some(symbol), msg_sender().unwrap()).log();
+    }
+
+    #[storage(read, write)]
+    fn set_decimals(asset: AssetId, decimals: u8) {
+        require_access_owner();
+        storage.decimals.insert(asset, decimals);
+        SetDecimalsEvent::new(asset, decimals, msg_sender().unwrap()).log();
+    }
+}
+
+#[storage(read)]
+fn require_access_owner() {
+    require(
+        storage
+            .owner
+            .read() == State::Initialized(msg_sender().unwrap()),
+        AccessError::NotOwner,
+    );
+}
+
+impl SRC20 for Contract {
+    #[storage(read)]
+    fn total_assets() -> u64 {
+        storage.total_assets.read()
+    }
+
+    #[storage(read)]
+    fn total_supply(asset: AssetId) -> Option<u64> {
+        storage.total_supply.get(asset).try_read()
+    }
+
+    #[storage(read)]
+    fn name(asset: AssetId) -> Option<String> {
+        storage.name.get(asset).read_slice()
+    }
+
+    #[storage(read)]
+    fn symbol(asset: AssetId) -> Option<String> {
+        storage.symbol.get(asset).read_slice()
+    }
+
+    #[storage(read)]
+    fn decimals(asset: AssetId) -> Option<u8> {
+        storage.decimals.get(asset).try_read()
+    }
+}
+
+impl SRC3 for Contract {
+    #[storage(read, write)]
+    fn mint(recipient: Identity, sub_id: Option<SubId>, amount: u64) {
+        require_access_owner();
+        let sub_id = match sub_id {
+            Some(id) => id,
+            None => SubId::zero(),
+        };
+        let asset_id = AssetId::new(ContractId::this(), sub_id);
+        let supply = storage.total_supply.get(asset_id).try_read();
+        if supply.is_none() {
+            storage
+                .total_assets
+                .write(storage.total_assets.try_read().unwrap_or(0) + 1);
+        }
+        let current_supply = supply.unwrap_or(0);
+        storage
+            .total_supply
+            .insert(asset_id, current_supply + amount);
+        mint_to(recipient, sub_id, amount);
+        TotalSupplyEvent::new(asset_id, current_supply + amount, msg_sender().unwrap()).log();
+    }
+
+    #[payable]
+    #[storage(read, write)]
+    fn burn(sub_id: SubId, amount: u64) {
+        require_access_owner();
+        let asset_id = AssetId::new(ContractId::this(), sub_id);
+        require(this_balance(asset_id) >= amount, "not-enough-coins");
+
+        let supply = storage.total_supply.get(asset_id).try_read();
+        let current_supply = supply.unwrap_or(0);
+        storage
+            .total_supply
+            .insert(asset_id, current_supply - amount);
+        burn(sub_id, amount);
+        TotalSupplyEvent::new(asset_id, current_supply - amount, msg_sender().unwrap()).log();
+    }
+}
 `,
-    multiAssetSrc20: `// ERC1155 equivalent in Sway.
+      copy: `// ERC1155 equivalent in Sway.
 contract;
 
 use src5::{AccessError, SRC5, State};
@@ -370,15 +695,16 @@ impl SRC3 for Contract {
         TotalSupplyEvent::new(asset_id, current_supply - amount, msg_sender().unwrap()).log();
     }
 }
-`,
+`
+    }
   }
 
   const [selectedContract, setSelectedContract] = useState<keyof typeof contractExamples>("counter")
-  const [code, setCode] = useState(contractExamples.counter)
+  const [code, setCode] = useState(contractExamples.counter.display)
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
-    setCode(contractExamples[selectedContract])
+    setCode(contractExamples[selectedContract].display)
   }, [selectedContract])
 
   useEffect(() => {
@@ -387,7 +713,7 @@ impl SRC3 for Contract {
 
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(code)
+      await navigator.clipboard.writeText(contractExamples[selectedContract].copy)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch (err) {
@@ -529,11 +855,11 @@ impl SRC3 for Contract {
 
               {/* Code editor area */}
               <div className="relative">
-                <pre 
+                <pre
                   className="w-full h-96 p-6 text-gray-300 font-mono text-sm overflow-auto scrollbar-thin scrollbar-track-gray-800 scrollbar-thumb-emerald-600 hover:scrollbar-thumb-emerald-500 scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
                   style={{ backgroundColor: '#111827' }}
                 >
-                  <code 
+                  <code
                     className="language-rust"
                     style={{ backgroundColor: 'transparent' }}
                   >
@@ -582,15 +908,15 @@ impl SRC3 for Contract {
                   className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700"
                   asChild
                 >
-                  <Link 
+                  <Link
                     href={
-                      selectedContract === "counter" 
+                      selectedContract === "counter"
                         ? "https://www.sway-playground.org/?toolchain=testnet&transpile=false&gist=3db6631edc4ccf828ba869d22a32e132"
                         : selectedContract === "singleAssetSrc20"
-                        ? "https://www.sway-playground.org/?toolchain=testnet&transpile=false&gist=d5b7964fdd9a8c6e90f220e32b4111a7"
-                        : "https://www.sway-playground.org/?toolchain=testnet&transpile=false&gist=98b11f6b02478b12ea579ef2c3391729"
-                    } 
-                    target="_blank" 
+                          ? "https://www.sway-playground.org/?toolchain=testnet&transpile=false&gist=d5b7964fdd9a8c6e90f220e32b4111a7"
+                          : "https://www.sway-playground.org/?toolchain=testnet&transpile=false&gist=98b11f6b02478b12ea579ef2c3391729"
+                    }
+                    target="_blank"
                     rel="noopener noreferrer"
                   >
                     <span className="mr-2">🏄‍♂️</span>
@@ -1071,7 +1397,7 @@ impl SRC3 for Contract {
           <Separator className="my-8 bg-gray-700" />
 
           <div className="text-center text-gray-400">
-              <p>Built with 🌴 and ❤️</p>
+            <p>Built with 🌴 and ❤️</p>
 
           </div>
         </div>
