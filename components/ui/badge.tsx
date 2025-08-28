@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "inline-flex items-center rounded-lg border px-3 py-1 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
   {
     variants: {
       variant: {
@@ -23,11 +23,32 @@ const badgeVariants = cva(
   }
 )
 
-export interface BadgeProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof badgeVariants> {}
+interface BaseBadgeProps extends VariantProps<typeof badgeVariants> {
+  className?: string
+}
+
+interface DivBadgeProps extends BaseBadgeProps, React.HTMLAttributes<HTMLDivElement> {}
+
+interface LinkBadgeProps extends BaseBadgeProps, React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  href: string
+}
+
+type BadgeProps = DivBadgeProps | LinkBadgeProps
 
 function Badge({ className, variant, ...props }: BadgeProps) {
+  if ('href' in props) {
+    const { href, target, rel, ...anchorProps } = props
+    return (
+      <a 
+        href={href}
+        target={target}
+        rel={rel}
+        className={cn(badgeVariants({ variant }), className, "cursor-pointer hover:opacity-80 transition-all duration-200 hover:scale-105 hover:shadow-md hover:underline decoration-2 underline-offset-2")}
+        {...anchorProps}
+      />
+    )
+  }
+  
   return (
     <div className={cn(badgeVariants({ variant }), className)} {...props} />
   )

@@ -733,7 +733,7 @@ impl SRC3 for Contract {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2 cursor-pointer" onClick={scrollToTop}>
-              <span className="text-2xl">🌴</span>
+              <img src="/logo.png" alt="Sway Logo" className="w-6 h-6" />
               <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
                 Sway
               </span>
@@ -1040,7 +1040,10 @@ impl SRC3 for Contract {
       <section id="language" className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 text-gray-900">🌴 The Sway language</h2>
+            <h2 className="text-4xl font-bold mb-4 text-gray-900">
+              <img src="/logo.png" alt="Sway Logo" className="inline w-8 h-8 mr-2" />
+              The Sway language
+            </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Rust-inspired syntax meets blockchain efficiency. Write smart contracts that are both safe and performant.
             </p>
@@ -1130,12 +1133,43 @@ impl SRC3 for Contract {
               </CardHeader>
               <CardContent>
                 <div className=" flex flex-wrap items-center gap-3">
-                  <Badge variant="secondary">forc call</Badge>
-                  <Badge variant="secondary">forc test</Badge>
-                  <Badge variant="secondary">forc deploy</Badge>
+                  <Badge 
+                    variant="secondary" 
+                    href="https://docs.fuel.network/docs/sway/testing/testing_with_forc_call/#forc-call" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    forc call
+                  </Badge>
+                  <Badge 
+                    variant="secondary" 
+                    href="https://docs.fuel.network/docs/sway/testing/unit-testing/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    forc test
+                  </Badge>
+                  <Badge 
+                    variant="secondary" 
+                    href="https://docs.fuel.network/docs/forc/plugins/forc_deploy/#forc-deploy" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    forc deploy
+                  </Badge>
                 </div>
               </CardContent>
             </Card>
+          </div>
+          
+          <div className="mt-16 text-center">
+            <Button size="lg" variant="outline" className="border-amber-200 hover:bg-amber-50 bg-transparent">
+              <Link href="https://docs.fuel.network/docs/forc/" className="flex items-center" target="_blank" rel="noopener noreferrer">
+                <Settings className="mr-2 h-4 w-4" />
+                Explore Forc toolchain
+                <ExternalLink className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
@@ -1397,7 +1431,7 @@ impl SRC3 for Contract {
           <Separator className="my-8 bg-gray-700" />
 
           <div className="text-center text-gray-400">
-            <p>Built with 🌴 and ❤️</p>
+            <p>Built with <img src="/logo.png" alt="Sway Logo" className="inline w-4 h-4 mx-1" /> and ❤️</p>
 
           </div>
         </div>
