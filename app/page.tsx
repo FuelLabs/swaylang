@@ -754,6 +754,10 @@ impl SRC3 for Contract {
               <Link href="#registry" className="text-gray-700 hover:text-emerald-600 transition-colors">
                 Registry
               </Link>
+              <Link href="https://forum.fuel.network/" target="_blank" rel="noopener noreferrer" className="text-gray-700 flex items-center -gap-1 hover:text-emerald-600 transition-colors">
+                Forum
+                <ExternalLink className="ml-2 h-4 w-4" />
+              </Link>
             </div>
             <div className="flex items-center space-x-4">
               <Button variant="ghost" size="icon">
