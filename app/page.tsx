@@ -786,7 +786,7 @@ impl SRC3 for Contract {
         <div className="relative max-w-7xl mx-auto text-center">
           <div className="mb-8">
             <div className="inline-flex items-center justify-center w-24 h-24 mb-6">
-              <img src="/sway-light.png" alt="Sway Logo" className="w-24 h-24" />
+              <img src="/logo.png" alt="Sway Logo" className="w-24 h-24" />
             </div>
             <h1 className="text-5xl md:text-7xl font-bold mb-6 text-gray-900">
               Sway
@@ -1129,7 +1129,7 @@ impl SRC3 for Contract {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2">
+                <div className=" flex flex-wrap items-center gap-3">
                   <Badge variant="secondary">forc call</Badge>
                   <Badge variant="secondary">forc test</Badge>
                   <Badge variant="secondary">forc deploy</Badge>
@@ -1360,7 +1360,7 @@ impl SRC3 for Contract {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-2 mb-4">
-                <img src="/sway-dark.png" alt="Sway Logo" className="w-8 h-8" />
+                <img src="/logo.png" alt="Sway Logo" className="w-8 h-8" />
                 <span className="text-xl font-bold">Sway</span>
               </div>
               <p className="text-gray-400">A chill smart contract language for the Fuel ecosystem. 🏖️</p>
