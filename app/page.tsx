@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Prism from "prismjs"
 import "prismjs/themes/prism-tomorrow.css"
 import "prismjs/components/prism-rust"
@@ -702,9 +702,13 @@ impl SRC3 for Contract {
   const [selectedContract, setSelectedContract] = useState<keyof typeof contractExamples>("counter")
   const [code, setCode] = useState(contractExamples.counter.display)
   const [copied, setCopied] = useState(false)
+  const codeRef = useRef<HTMLPreElement>(null)
 
   useEffect(() => {
     setCode(contractExamples[selectedContract].display)
+    if (codeRef.current) {
+      codeRef.current.scrollTo({ top: 0, left: 0, behavior: "auto" })
+    }
   }, [selectedContract])
 
   useEffect(() => {
@@ -713,7 +717,7 @@ impl SRC3 for Contract {
 
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(contractExamples[selectedContract].copy)
+      await navigator.clipboard.writeText(code)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch (err) {
@@ -860,6 +864,7 @@ impl SRC3 for Contract {
               {/* Code editor area */}
               <div className="relative">
                 <pre
+                  ref={codeRef}
                   className="w-full h-96 p-6 text-gray-300 font-mono text-sm overflow-auto scrollbar-thin scrollbar-track-gray-800 scrollbar-thumb-emerald-600 hover:scrollbar-thumb-emerald-500 scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
                   style={{ backgroundColor: '#111827' }}
                 >
