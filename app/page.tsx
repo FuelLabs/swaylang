@@ -21,6 +21,19 @@ import {
   Layers,
   Settings,
   Copy,
+  Download,
+  Play,
+  Github,
+  MessageCircle,
+  Users,
+  Star,
+  GitFork,
+  CircleCheckBig,
+  ArrowRight,
+  Cpu,
+  Wrench,
+  Rocket,
+  Twitter,
 } from "lucide-react"
 import Link from "next/link"
 
@@ -373,7 +386,13 @@ impl SRC3 for Contract {
   const [selectedContract, setSelectedContract] = useState<keyof typeof contractExamples>("counter")
   const [code, setCode] = useState(contractExamples.counter)
   const [copied, setCopied] = useState(false)
+  const [installCopied, setInstallCopied] = useState(false)
   const codeRef = useRef<HTMLPreElement>(null)
+  const [typedText, setTypedText] = useState("")
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [loopIndex, setLoopIndex] = useState(0)
+
+  const typingPhrases = ["for Smart Contracts", "powered by Fuel VM", "for Scalable dApps"]
 
   useEffect(() => {
     setCode(contractExamples[selectedContract])
@@ -385,6 +404,29 @@ impl SRC3 for Contract {
   useEffect(() => {
     Prism.highlightAll()
   }, [code])
+
+  // Typing animation for hero headline trailing word
+  useEffect(() => {
+    const current = typingPhrases[loopIndex % typingPhrases.length]
+    const delta = isDeleting ? 60 : 120
+
+    const tick = () => {
+      const updated = isDeleting
+        ? current.substring(0, typedText.length - 1)
+        : current.substring(0, typedText.length + 1)
+      setTypedText(updated)
+
+      if (!isDeleting && updated === current) {
+        setTimeout(() => setIsDeleting(true), 900)
+      } else if (isDeleting && updated === "") {
+        setIsDeleting(false)
+        setLoopIndex((idx) => idx + 1)
+      }
+    }
+
+    const timer = setTimeout(tick, delta)
+    return () => clearTimeout(timer)
+  }, [typedText, isDeleting, loopIndex])
 
   const copyToClipboard = async () => {
     try {
@@ -462,41 +504,58 @@ impl SRC3 for Contract {
         >
           <path d="M0,60 C300,120 900,0 1200,60 L1200,120 L0,120 Z" fill="rgba(16, 185, 129, 0.1)" />
         </svg>
-        <div className="relative max-w-7xl mx-auto text-center">
-          <div className="mb-8">
-            <div className="inline-flex items-center justify-center w-24 h-24 mb-6">
-              <img src="/logo.png" alt="Sway Logo" className="w-24 h-24" />
+        <div className="relative max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center gap-10 lg:gap-14">
+            {/* Left: Logo, heading, copy */}
+            <div className="flex-1 text-center m-auto lg:text-left">
+              {/* <div className="inline-flex items-center justify-center lg:justify-start w-24 h-24 mb-6">
+                <img src="/logo.png" alt="Sway Logo" className="w-24 h-24" />
+              </div> */}
+              <h1 className="mt-0 text-left text-[28pt] font-extrabold leading-none text-gray-900 md:text-[32pt] lg:text-[38pt] xl:text-[40pt] mb-6">
+                The Programming <br />
+                Language <span id="typer" className="block text-emerald-700">{typedText}  <span className="blink font-light">|</span></span>
+               
+              </h1>
+              <p className="text-lg lg:text-xl text-gray-600 mb-8 max-w-3xl lg:max-w-xl mx-auto lg:mx-0">
+                Sway is a domain-specific language for the FuelVM. Write fast, safe, and efficient smart contracts with Rust-like syntax.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 lg:justify-start justify-center">
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700"
+                  asChild
+                >
+                  <Link href="https://docs.fuel.network/docs/sway/" target="_blank" rel="noopener noreferrer">
+                    Get started <ChevronRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+                <Button size="lg" variant="outline" className="border-emerald-200 hover:bg-emerald-50 bg-transparent">
+                  <Link href="https://github.com/FuelLabs/sway-examples" className="flex items-center" target="_blank" rel="noopener noreferrer">
+                    <Code className="mr-2 h-4 w-4" />
+                    View examples
+                  </Link>
+                </Button>
+              </div>
+
+              <div className="mt-8 flex flex-wrap gap-6 justify-center lg:justify-start text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-emerald-500 rounded-full"> </div>
+                  <span>Memory Safe</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-teal-500 rounded-full"></div>
+                  <span>High Performance</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-cyan-500 rounded-full"></div>
+                  <span>Rust-like Syntax</span>
+                </div>
+              </div>
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-gray-900">
-              Sway
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
-              Smart contract language of the future. ☀️
-              <br />
-              Safe, fast, and expressive - inspired by Rust.
-            </p>
-          </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Button
-              size="lg"
-              className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700"
-              asChild
-            >
-              <Link href="https://docs.fuel.network/docs/sway/" target="_blank" rel="noopener noreferrer">
-                Get started <ChevronRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-            <Button size="lg" variant="outline" className="border-emerald-200 hover:bg-emerald-50 bg-transparent">
-              <Link href="https://github.com/FuelLabs/sway-examples" className="flex items-center" target="_blank" rel="noopener noreferrer">
-                <Code className="mr-2 h-4 w-4" />
-                View examples
-              </Link>
-            </Button>
-          </div>
-
-          {/* Interactive Code Editor */}
-          <Card className="max-w-2xl mx-auto bg-gray-900 border-gray-700 relative">
+            {/* Right: Interactive Code Editor */}
+            <Card className="w-full m-auto md:max-w-xl  bg-gray-900 border-gray-700 relative">
             <CardContent className="p-0">
               {/* Header with dropdown */}
               <div className="flex items-center justify-between p-4 border-b border-gray-700">
@@ -599,7 +658,6 @@ impl SRC3 for Contract {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <span className="mr-2">🏄‍♂️</span>
                     Deploy with Sway playground
                     <ExternalLink className="ml-2 h-4 w-4" />
                   </Link>
@@ -607,11 +665,292 @@ impl SRC3 for Contract {
               </div>
             </CardContent>
           </Card>
+          </div>
         </div>
       </section>
 
-      {/* Playground & Charcoal Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-cyan-50 to-blue-50 relative overflow-hidden">
+
+      {/* Language Section */}
+      <section id="language" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold mb-4 text-gray-900">🏖️ Why Choose Sway?</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Purpose-built for the next generation of blockchain applications
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-16 items-center max-w-6xl mx-auto mb-16">
+            <div className="space-y-8">
+              <div className="flex gap-4 group">
+                <div className="flex-shrink-0 w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
+                  <Shield className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">Built for Safety</h3>
+                  <p className="text-gray-600 leading-relaxed">Memory safety without garbage collection, preventing common smart contract vulnerabilities.</p>
+                </div>
+              </div>
+              <div className="flex gap-4 group">
+                <div className="flex-shrink-0 w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
+                  <Zap className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">Optimized Performance</h3>
+                  <p className="text-gray-600 leading-relaxed">Compiled directly to Fuel VM bytecode for maximum efficiency and minimal gas costs.</p>
+                </div>
+              </div>
+              <div className="flex gap-4 group">
+                <div className="flex-shrink-0 w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
+                  <Code className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">Developer Experience</h3>
+                  <p className="text-gray-600 leading-relaxed">Familiar Rust-like syntax with powerful tooling, testing, and debugging capabilities.</p>
+                </div>
+              </div>
+            </div>
+            <div className="lg:pl-8">
+              <Card className="border-emerald-200">
+                <CardHeader>
+                  <CardTitle className="text-xl">What Sets Sway Apart</CardTitle>
+                  <CardDescription>Built from the ground up for modern blockchain development</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <CircleCheckBig className="w-5 h-5 text-teal-600 flex-shrink-0" />
+                    <span className="text-gray-900">Zero-cost abstractions</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CircleCheckBig className="w-5 h-5 text-teal-600 flex-shrink-0" />
+                    <span className="text-gray-900">Compile-time safety checks</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CircleCheckBig className="w-5 h-5 text-teal-600 flex-shrink-0" />
+                    <span className="text-gray-900">Native UTXO model support</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CircleCheckBig className="w-5 h-5 text-teal-600 flex-shrink-0" />
+                    <span className="text-gray-900">Parallel transaction execution</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CircleCheckBig className="w-5 h-5 text-teal-600 flex-shrink-0" />
+                    <span className="text-gray-900">Advanced type system</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CircleCheckBig className="w-5 h-5 text-teal-600 flex-shrink-0" />
+                    <span className="text-gray-900">Comprehensive testing framework</span>
+                  </div>
+                  <div className="pt-4">
+                    <Button className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-700 hover:to-teal-700 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 font-semibold tracking-tight" asChild>
+                      <Link href="https://docs.fuel.network/docs/sway/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2">
+                        Explore Documentation
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="" className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
+              <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Powerful Features</span>
+            </h2>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-4xl mx-auto">Everything you need to build secure, efficient, and scalable smart contracts</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <Card className="rounded-lg border bg-card text-card-foreground shadow-sm hover:border-emerald-300/30 hover:shadow-lg transition-all duration-300 hover:scale-105 group">
+              <CardHeader className="space-y-0 p-6 pb-4">
+                <div className="text-emerald-600 group-hover:text-teal-600 transition-colors duration-300 mb-4">
+                  <Zap className="w-8 h-8" />
+                </div>
+                <CardTitle className="tracking-tight text-xl mb-2">High Performance</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 pt-0">
+                <p className="text-sm text-gray-600 leading-relaxed">Built for the Fuel Virtual Machine with optimal gas efficiency and fast execution times.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-lg border bg-card text-card-foreground shadow-sm hover:border-emerald-300/30 hover:shadow-lg transition-all duration-300 hover:scale-105 group">
+              <CardHeader className="space-y-0 p-6 pb-4">
+                <div className="text-emerald-600 group-hover:text-teal-600 transition-colors duration-300 mb-4">
+                  <Shield className="w-8 h-8" />
+                </div>
+                <CardTitle className="tracking-tight text-xl mb-2">Memory Safe</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 pt-0">
+                <p className="text-sm text-gray-600 leading-relaxed">Rust-inspired syntax with compile-time memory safety checks and zero-cost abstractions.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-lg border bg-card text-card-foreground shadow-sm hover:border-emerald-300/30 hover:shadow-lg transition-all duration-300 hover:scale-105 group">
+              <CardHeader className="space-y-0 p-6 pb-4">
+                <div className="text-emerald-600 group-hover:text-teal-600 transition-colors duration-300 mb-4">
+                  <Code className="w-8 h-8" />
+                </div>
+                <CardTitle className="tracking-tight text-xl mb-2">Developer Friendly</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 pt-0">
+                <p className="text-sm text-gray-600 leading-relaxed">Familiar syntax for Rust developers with powerful tooling and comprehensive documentation.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-lg border bg-card text-card-foreground shadow-sm hover:border-emerald-300/30 hover:shadow-lg transition-all duration-300 hover:scale-105 group">
+              <CardHeader className="space-y-0 p-6 pb-4">
+                <div className="text-emerald-600 group-hover:text-teal-600 transition-colors duration-300 mb-4">
+                  <Cpu className="w-8 h-8" />
+                </div>
+                <CardTitle className="tracking-tight text-xl mb-2">Fuel VM Native</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 pt-0">
+                <p className="text-sm text-gray-600 leading-relaxed">Purpose-built for Fuel's high-performance virtual machine with native UTXO support.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-lg border bg-card text-card-foreground shadow-sm hover:border-emerald-300/30 hover:shadow-lg transition-all duration-300 hover:scale-105 group">
+              <CardHeader className="space-y-0 p-6 pb-4">
+                <div className="text-emerald-600 group-hover:text-teal-600 transition-colors duration-300 mb-4">
+                  <Wrench className="w-8 h-8" />
+                </div>
+                <CardTitle className="tracking-tight text-xl mb-2">Rich Toolchain</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 pt-0">
+                <p className="text-sm text-gray-600 leading-relaxed">Complete development ecosystem with compiler, debugger, and testing framework.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-lg border bg-card text-card-foreground shadow-sm hover:border-emerald-300/30 hover:shadow-lg transition-all duration-300 hover:scale-105 group">
+              <CardHeader className="space-y-0 p-6 pb-4">
+                <div className="text-emerald-600 group-hover:text-teal-600 transition-colors duration-300 mb-4">
+                  <Rocket className="w-8 h-8" />
+                </div>
+                <CardTitle className="tracking-tight text-xl mb-2">Production Ready</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 pt-0">
+                <p className="text-sm text-gray-600 leading-relaxed">Battle-tested language powering real-world smart contracts on the Fuel network.</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="mt-16 text-center">
+            <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full text-sm font-medium">
+              <Zap className="w-4 h-4" />
+              Built for the Fuel Virtual Machine
+            </div>
+          </div>
+        </div>
+      </section>
+
+       {/* Get Started Section */}
+      <section className="py-20 bg-gradient-to-b from-white to-emerald-50/30">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
+              <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Get Started</span> in Minutes
+            </h2>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">From zero to deployed smart contract in just a few simple steps</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-16">
+            {/* Step 01 */}
+            <Card className="rounded-lg border bg-card text-card-foreground shadow-sm text-center hover:border-emerald-300/30 hover:shadow-lg transition-all duration-300 group">
+              <CardHeader className="space-y-0 p-6 pb-4">
+                <div className="mx-auto w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
+                  <Download className="w-5 h-5" />
+                </div>
+                <div className="text-sm font-mono text-emerald-600 mb-2">01</div>
+                <CardTitle className="tracking-tight text-xl">Install Sway</CardTitle>
+                <CardDescription>Get up and running with the Sway toolchain</CardDescription>
+              </CardHeader>
+              <CardContent className="p-6 pt-0">
+                <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 hover:border-emerald-300 hover:shadow-md duration-300 backdrop-blur-sm font-medium h-9 rounded-md px-3 group-hover:scale-105 transition-transform">
+                  Install Now
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </CardContent>
+            </Card>
+
+            {/* Step 02 */}
+            <Card className="rounded-lg border bg-card text-card-foreground shadow-sm text-center hover:border-emerald-300/30 hover:shadow-lg transition-all duration-300 group">
+              <CardHeader className="space-y-0 p-6 pb-4">
+                <div className="mx-auto w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
+                  <BookOpen className="w-5 h-5" />
+                </div>
+                <div className="text-sm font-mono text-emerald-600 mb-2">02</div>
+                <CardTitle className="tracking-tight text-xl">Learn the Basics</CardTitle>
+                <CardDescription>Follow our comprehensive tutorial and examples</CardDescription>
+              </CardHeader>
+              <CardContent className="p-6 pt-0">
+                <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 hover:border-emerald-300 hover:shadow-md duration-300 backdrop-blur-sm font-medium h-9 rounded-md px-3 group-hover:scale-105 transition-transform">
+                  Start Tutorial
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </CardContent>
+            </Card>
+
+            {/* Step 03 */}
+            <Card className="rounded-lg border bg-card text-card-foreground shadow-sm text-center hover:border-emerald-300/30 hover:shadow-lg transition-all duration-300 group">
+              <CardHeader className="space-y-0 p-6 pb-4">
+                <div className="mx-auto w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
+                  <Play className="w-5 h-5" />
+                </div>
+                <div className="text-sm font-mono text-emerald-600 mb-2">03</div>
+                <CardTitle className="tracking-tight text-xl">Build & Deploy</CardTitle>
+                <CardDescription>Create your first smart contract on Fuel</CardDescription>
+              </CardHeader>
+              <CardContent className="p-6 pt-0">
+                <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 hover:border-emerald-300 hover:shadow-md duration-300 backdrop-blur-sm font-medium h-9 rounded-md px-3 group-hover:scale-105 transition-transform">
+                  Try Playground
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="max-w-2xl mx-auto">
+            <div className="text-center">
+              <h3 className="text-lg font-semibold mb-4">Quick Install</h3>
+              <div className="relative CodeBlock flex flex-row items-center w-full my-[10px] mt-0 rounded-tl-none border-2 border-green-200 py-5 text-lg">
+                <pre className="bg-[#282A36] text-white w-full rounded-md mx-4 overflow-x-auto">
+                  <code className="block px-4 py-3 whitespace-pre">
+                    curl -fsSL https://install.fuel.network | sh
+                  </code>
+                </pre>
+                <Button
+                  aria-label="Copy install command"
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText("curl -fsSL https://install.fuel.network | sh")
+                      setInstallCopied(true)
+                      setTimeout(() => setInstallCopied(false), 2500)
+                    } catch (e) {
+                      // noop
+                    }
+                  }}
+                  className="absolute right-8 top-[35%] h-7 w-7 p-1 text-white opacity-70 hover:opacity-100"
+                >
+                  {installCopied ? (
+                    <CircleCheckBig className="h-7 w-7" />
+                  ) : (
+                    <Copy className="h-7 w-7" />
+                  )}
+                </Button>
+              </div>
+              <p className="text-sm text-gray-600">Installs Sway, Fuel CLI, and all development tools</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+        {/* Playground & Charcoal Section */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-cyan-50 to-blue-50 relative overflow-hidden">
         <div className="absolute top-0 right-0 text-6xl opacity-20">🏖️</div>
         <div className="absolute bottom-0 left-0 text-4xl opacity-20">🌊</div>
         <div className="max-w-7xl mx-auto">
@@ -657,7 +996,6 @@ impl SRC3 for Contract {
                   asChild
                 >
                   <Link href="https://www.sway-playground.org/" target="_blank" rel="noopener noreferrer">
-                    <span className="mr-2">🏄‍♂️</span>
                     Launch playground
                     <ExternalLink className="ml-2 h-4 w-4" />
                   </Link>
@@ -716,68 +1054,11 @@ impl SRC3 for Contract {
         </div>
       </section>
 
-      {/* Language Section */}
-      <section id="language" className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 text-gray-900">
-              <img src="/logo.png" alt="Sway Logo" className="inline w-8 h-8 mr-2" />
-              The Sway language
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Rust-inspired syntax meets blockchain efficiency. Write smart contracts that are both safe and performant.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="border-emerald-200 hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <Shield className="h-8 w-8 text-emerald-600 mb-2" />
-                <CardTitle>Type Safe</CardTitle>
-                <CardDescription>
-                  Expressive type system with generics, algebraic types, and compile-time safety checks such as the CEI pattern.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="border-teal-200 hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <Zap className="h-8 w-8 text-teal-600 mb-2" />
-                <CardTitle>High Performance</CardTitle>
-                <CardDescription>
-                  Optimized for the Fuel VM with zero-cost abstractions and efficient execution.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="border-cyan-200 hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <Sparkles className="h-8 w-8 text-cyan-600 mb-2" />
-                <CardTitle>Developer Friendly</CardTitle>
-                <CardDescription>
-                  Familiar Rust-like syntax with powerful tooling and comprehensive error messages.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </div>
-
-          <div className="mt-16 text-center">
-            <Button size="lg" variant="outline" className="border-emerald-200 hover:bg-emerald-50 bg-transparent">
-              <Link href="https://docs.fuel.network/docs/sway/" className="flex items-center" target="_blank" rel="noopener noreferrer">
-                <BookOpen className="mr-2 h-4 w-4" />
-                Read the Sway book
-                <ExternalLink className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
       {/* Forc Section */}
       <section id="forc" className="py-20 px-4 sm:px-6 lg:px-8 bg-white/50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 text-gray-900">⚡ Forc toolchain</h2>
+            <h2 className="text-4xl font-bold mb-4 text-gray-900">Forc toolchain</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               The complete toolkit for Sway development. Build, test, and deploy with ease.
             </p>
@@ -858,7 +1139,7 @@ impl SRC3 for Contract {
       <section id="libraries" className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 text-gray-900">📚 Sway libraries</h2>
+            <h2 className="text-4xl font-bold mb-4 text-gray-900">Sway libraries</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               A growing ecosystem of reusable libraries to accelerate your development.
             </p>
@@ -907,7 +1188,7 @@ impl SRC3 for Contract {
       <section id="standards" className="py-20 px-4 sm:px-6 lg:px-8 bg-white/50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 text-gray-900">📋 Sway Standards</h2>
+            <h2 className="text-4xl font-bold mb-4 text-gray-900">Sway Standards</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Community-driven standards for interoperability and best practices.
             </p>
@@ -1020,7 +1301,7 @@ impl SRC3 for Contract {
       <section id="registry" className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 text-gray-900">📦 Sway registry</h2>
+            <h2 className="text-4xl font-bold mb-4 text-gray-900">Sway registry</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               forc.pub - The central registry for Sway packages and libraries.
             </p>
