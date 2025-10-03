@@ -441,6 +441,13 @@ impl SRC3 for Contract {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
+
+  const scrollToGetStarted = () => {
+    const element = document.getElementById('get-started')
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-50 via-emerald-50 to-cyan-100 relative">
       <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-yellow-200/30 to-transparent rounded-full blur-3xl"></div>
@@ -450,29 +457,25 @@ impl SRC3 for Contract {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2 cursor-pointer" onClick={scrollToTop}>
-              <img src="/logo.png" alt="Sway Logo" className="w-6 h-6" />
+              {/* <img src="/logo.png" alt="Sway Logo" className="w-6 h-6" /> */}
               <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
                 Sway
               </span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
-              <Link href="#language" className="text-gray-700 hover:text-emerald-600 transition-colors">
-                Language
-              </Link>
-              <Link href="#forc" className="text-gray-700 hover:text-emerald-600 transition-colors">
-                Forc
-              </Link>
-              <Link href="#libraries" className="text-gray-700 hover:text-emerald-600 transition-colors">
-                Libraries
-              </Link>
-              <Link href="#standards" className="text-gray-700 hover:text-emerald-600 transition-colors">
-                Standards
-              </Link>
-              <Link href="#registry" className="text-gray-700 hover:text-emerald-600 transition-colors">
-                Registry
+              <button onClick={scrollToGetStarted} className="text-gray-700 hover:text-emerald-600 transition-colors">
+                Get Started
+              </button>
+              <Link href="https://docs.fuel.network/docs/sway/" target="_blank" rel="noopener noreferrer" className="text-gray-700 flex items-center -gap-1 hover:text-emerald-600 transition-colors">
+                Docs
+                <ExternalLink className="ml-2 h-4 w-4" />
               </Link>
               <Link href="https://forum.fuel.network/" target="_blank" rel="noopener noreferrer" className="text-gray-700 flex items-center -gap-1 hover:text-emerald-600 transition-colors">
                 Forum
+                <ExternalLink className="ml-2 h-4 w-4" />
+              </Link>
+              <Link href="https://www.sway-playground.org/" target="_blank" rel="noopener noreferrer" className="text-gray-700 flex items-center -gap-1 hover:text-emerald-600 transition-colors">
+                Playground
                 <ExternalLink className="ml-2 h-4 w-4" />
               </Link>
             </div>
@@ -511,104 +514,89 @@ impl SRC3 for Contract {
               {/* <div className="inline-flex items-center justify-center lg:justify-start w-24 h-24 mb-6">
                 <img src="/logo.png" alt="Sway Logo" className="w-24 h-24" />
               </div> */}
-              <h1 className="mt-0 text-left text-[28pt] font-extrabold leading-none text-gray-900 md:text-[32pt] lg:text-[38pt] xl:text-[40pt] mb-6">
+              <h1 className="mt-0 text-left text-4xl font-bold leading-tight text-gray-900 md:text-5xl lg:text-6xl xl:text-7xl mb-6">
                 The Programming <br />
-                Language <span id="typer" className="block text-emerald-700">{typedText}  <span className="blink font-light">|</span></span>
-               
+                Language <span id="typer" className="block text-emerald-600">{typedText}  <span className="blink font-light">|</span></span>
+
               </h1>
-              <p className="text-lg lg:text-xl text-gray-600 mb-8 max-w-3xl lg:max-w-xl mx-auto lg:mx-0">
+              <p className="text-lg text-gray-600 mb-8 max-w-3xl lg:max-w-xl mx-auto lg:mx-0">
                 Sway is a domain-specific language for the FuelVM. Write fast, safe, and efficient smart contracts with Rust-like syntax.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 lg:justify-start justify-center">
                 <Button
                   size="lg"
-                  className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700"
+                  className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium"
                   asChild
                 >
                   <Link href="https://docs.fuel.network/docs/sway/" target="_blank" rel="noopener noreferrer">
                     Get started <ChevronRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" className="border-emerald-200 hover:bg-emerald-50 bg-transparent">
+                <Button size="lg" variant="outline" className="border-emerald-200 hover:bg-emerald-50 bg-transparent text-gray-700 font-medium">
                   <Link href="https://github.com/FuelLabs/sway-examples" className="flex items-center" target="_blank" rel="noopener noreferrer">
                     <Code className="mr-2 h-4 w-4" />
                     View examples
                   </Link>
                 </Button>
               </div>
-
-              <div className="mt-8 flex flex-wrap gap-6 justify-center lg:justify-start text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-emerald-500 rounded-full"> </div>
-                  <span>Memory Safe</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-teal-500 rounded-full"></div>
-                  <span>High Performance</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-cyan-500 rounded-full"></div>
-                  <span>Rust-like Syntax</span>
-                </div>
-              </div>
             </div>
 
             {/* Right: Interactive Code Editor */}
             <Card className="w-full m-auto md:max-w-xl  bg-gray-900 border-gray-700 relative">
-            <CardContent className="p-0">
-              {/* Header with dropdown */}
-              <div className="flex items-center justify-between p-4 border-b border-gray-700">
-                <Select
-                  value={selectedContract}
-                  onValueChange={(value: keyof typeof contractExamples) => setSelectedContract(value)}
-                >
-                  <SelectTrigger className="w-64 bg-gray-800 border-gray-600 text-gray-300">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-gray-800 border-gray-600">
-                    <SelectItem value="counter" className="text-gray-300 hover:bg-gray-700">
-                      Counter contract
-                    </SelectItem>
-                    <SelectItem value="singleAssetSrc20" className="text-gray-300 hover:bg-gray-700">
-                      Single asset contract
-                    </SelectItem>
-                    <SelectItem value="multiAssetSrc20" className="text-gray-300 hover:bg-gray-700">
-                      Multi asset contract
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-
-                {/* Copy button */}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={copyToClipboard}
-                  className="text-gray-400 hover:text-gray-200 hover:bg-gray-800"
-                >
-                  <Copy className="h-4 w-4 mr-2" />
-                  {copied ? "Copied!" : "Copy"}
-                </Button>
-              </div>
-
-              {/* Code editor area */}
-              <div className="relative">
-                <pre
-                  ref={codeRef}
-                  className="w-full h-96 p-6 text-gray-300 font-mono text-sm overflow-auto scrollbar-thin scrollbar-track-gray-800 scrollbar-thumb-emerald-600 hover:scrollbar-thumb-emerald-500 scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
-                  style={{ backgroundColor: '#111827' }}
-                >
-                  <code
-                    className="language-rust"
-                    style={{ backgroundColor: 'transparent' }}
+              <CardContent className="p-0">
+                {/* Header with dropdown */}
+                <div className="flex items-center justify-between p-4 border-b border-gray-700">
+                  <Select
+                    value={selectedContract}
+                    onValueChange={(value: keyof typeof contractExamples) => setSelectedContract(value)}
                   >
-                    {code}
-                  </code>
-                </pre>
-                <style jsx>{`
+                    <SelectTrigger className="w-64 bg-gray-800 border-gray-600 text-gray-300">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-800 border-gray-600">
+                      <SelectItem value="counter" className="text-gray-300 hover:bg-gray-700">
+                        Counter contract
+                      </SelectItem>
+                      <SelectItem value="singleAssetSrc20" className="text-gray-300 hover:bg-gray-700">
+                        Single asset contract
+                      </SelectItem>
+                      <SelectItem value="multiAssetSrc20" className="text-gray-300 hover:bg-gray-700">
+                        Multi asset contract
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  {/* Copy button */}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={copyToClipboard}
+                    className="text-gray-400 hover:text-gray-200 hover:bg-gray-800"
+                  >
+                    <Copy className="h-4 w-4 mr-2" />
+                    {copied ? "Copied!" : "Copy"}
+                  </Button>
+                </div>
+
+                {/* Code editor area */}
+                <div className="relative">
+                  <pre
+                    ref={codeRef}
+                    className="w-full h-96 p-6 text-gray-300 font-mono text-sm overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-gray-800 scrollbar-thumb-emerald-600 hover:scrollbar-thumb-emerald-500 scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
+                    style={{ backgroundColor: '#111827' }}
+                  >
+                    <code
+                      className="language-rust"
+                      style={{ backgroundColor: 'transparent' }}
+                    >
+                      {code}
+                    </code>
+                  </pre>
+                  <style jsx>{`
                   pre::-webkit-scrollbar {
                     width: 6px;
-                    height: 6px;
+                    height: 0px;
                   }
                   
                   pre::-webkit-scrollbar-track {
@@ -639,55 +627,55 @@ impl SRC3 for Contract {
                     background: linear-gradient(45deg, #047857, #0f766e);
                   }
                 `}</style>
-              </div>
+                </div>
 
-              {/* Deploy button */}
-              <div className="p-4 border-t border-gray-700 bg-gray-800/50">
-                <Button
-                  className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700"
-                  asChild
-                >
-                  <Link
-                    href={
-                      selectedContract === "counter"
-                        ? "https://www.sway-playground.org/?toolchain=testnet&transpile=false&gist=3db6631edc4ccf828ba869d22a32e132"
-                        : selectedContract === "singleAssetSrc20"
-                          ? "https://www.sway-playground.org/?toolchain=testnet&transpile=false&gist=d5b7964fdd9a8c6e90f220e32b4111a7"
-                          : "https://www.sway-playground.org/?toolchain=testnet&transpile=false&gist=98b11f6b02478b12ea579ef2c3391729"
-                    }
-                    target="_blank"
-                    rel="noopener noreferrer"
+                {/* Deploy button */}
+                <div className="p-4 border-t border-gray-700 bg-gray-800/50">
+                  <Button
+                    className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700"
+                    asChild
                   >
-                    Deploy with Sway playground
-                    <ExternalLink className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+                    <Link
+                      href={
+                        selectedContract === "counter"
+                          ? "https://www.sway-playground.org/?toolchain=testnet&transpile=false&gist=3db6631edc4ccf828ba869d22a32e132"
+                          : selectedContract === "singleAssetSrc20"
+                            ? "https://www.sway-playground.org/?toolchain=testnet&transpile=false&gist=a2e98185cbe8076db661a271905c828a"
+                            : "https://www.sway-playground.org/?toolchain=testnet&transpile=false&gist=391fd956289cf3b57281e4e3cf7bad45"
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Deploy with Sway playground
+                      <ExternalLink className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
 
 
       {/* Language Section */}
-      <section id="language" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      <section id="language" className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4 text-gray-900">🏖️ Why Choose Sway?</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Purpose-built for the next generation of blockchain applications
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-4 text-gray-900">Why Choose Sway?</h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Purpose-built for the next generation of blockchain applications
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-16 items-center max-w-6xl mx-auto mb-16">
+          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto mb-12">
             <div className="space-y-8">
               <div className="flex gap-4 group">
                 <div className="flex-shrink-0 w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
                   <Shield className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold mb-2">Built for Safety</h3>
+                  <h3 className="text-lg font-semibold mb-2">Built for Safety</h3>
                   <p className="text-gray-600 leading-relaxed">Memory safety without garbage collection, preventing common smart contract vulnerabilities.</p>
                 </div>
               </div>
@@ -696,7 +684,7 @@ impl SRC3 for Contract {
                   <Zap className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold mb-2">Optimized Performance</h3>
+                  <h3 className="text-lg font-semibold mb-2">Optimized Performance</h3>
                   <p className="text-gray-600 leading-relaxed">Compiled directly to Fuel VM bytecode for maximum efficiency and minimal gas costs.</p>
                 </div>
               </div>
@@ -705,7 +693,7 @@ impl SRC3 for Contract {
                   <Code className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold mb-2">Developer Experience</h3>
+                  <h3 className="text-lg font-semibold mb-2">Developer Experience</h3>
                   <p className="text-gray-600 leading-relaxed">Familiar Rust-like syntax with powerful tooling, testing, and debugging capabilities.</p>
                 </div>
               </div>
@@ -713,7 +701,7 @@ impl SRC3 for Contract {
             <div className="lg:pl-8">
               <Card className="border-emerald-200">
                 <CardHeader>
-                  <CardTitle className="text-xl">What Sets Sway Apart</CardTitle>
+                  <CardTitle className="text-lg font-semibold">What Sets Sway Apart</CardTitle>
                   <CardDescription>Built from the ground up for modern blockchain development</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -742,7 +730,7 @@ impl SRC3 for Contract {
                     <span className="text-gray-900">Comprehensive testing framework</span>
                   </div>
                   <div className="pt-4">
-                    <Button className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-700 hover:to-teal-700 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 font-semibold tracking-tight" asChild>
+                    <Button className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-700 hover:to-teal-700 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 font-medium" asChild>
                       <Link href="https://docs.fuel.network/docs/sway/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2">
                         Explore Documentation
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -756,22 +744,34 @@ impl SRC3 for Contract {
         </div>
       </section>
 
-      <section id="" className="py-20 px-4 sm:px-6 lg:px-8">
+      <section id="" className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="container mx-auto px-4 sm:px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-6">
               <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Powerful Features</span>
             </h2>
-            <p className="text-lg sm:text-xl text-gray-600 max-w-4xl mx-auto">Everything you need to build secure, efficient, and scalable smart contracts</p>
+            <p className="text-lg text-gray-600 max-w-4xl mx-auto">Everything you need to build secure, efficient, and scalable smart contracts</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <Card className="rounded-lg border bg-card text-card-foreground shadow-sm hover:border-emerald-300/30 hover:shadow-lg transition-all duration-300 hover:scale-105 group">
               <CardHeader className="space-y-0 p-6 pb-4">
                 <div className="text-emerald-600 group-hover:text-teal-600 transition-colors duration-300 mb-4">
+                  <Rocket className="w-8 h-8" />
+                </div>
+                <CardTitle className="text-lg font-semibold mb-2">Provides TypeSafety</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 pt-0">
+                <p className="text-sm text-gray-600 leading-relaxed">It is a statically typed, compiled language with type inference and traits.</p>
+              </CardContent>
+            </Card>
+            <Card className="rounded-lg border bg-card text-card-foreground shadow-sm hover:border-emerald-300/30 hover:shadow-lg transition-all duration-300 hover:scale-105 group">
+
+              <CardHeader className="space-y-0 p-6 pb-4">
+                <div className="text-emerald-600 group-hover:text-teal-600 transition-colors duration-300 mb-4">
                   <Zap className="w-8 h-8" />
                 </div>
-                <CardTitle className="tracking-tight text-xl mb-2">High Performance</CardTitle>
+                <CardTitle className="text-lg font-semibold mb-2">High Performance</CardTitle>
               </CardHeader>
               <CardContent className="p-6 pt-0">
                 <p className="text-sm text-gray-600 leading-relaxed">Built for the Fuel Virtual Machine with optimal gas efficiency and fast execution times.</p>
@@ -783,7 +783,7 @@ impl SRC3 for Contract {
                 <div className="text-emerald-600 group-hover:text-teal-600 transition-colors duration-300 mb-4">
                   <Shield className="w-8 h-8" />
                 </div>
-                <CardTitle className="tracking-tight text-xl mb-2">Memory Safe</CardTitle>
+                <CardTitle className="text-lg font-semibold mb-2">Memory Safe</CardTitle>
               </CardHeader>
               <CardContent className="p-6 pt-0">
                 <p className="text-sm text-gray-600 leading-relaxed">Rust-inspired syntax with compile-time memory safety checks and zero-cost abstractions.</p>
@@ -795,7 +795,7 @@ impl SRC3 for Contract {
                 <div className="text-emerald-600 group-hover:text-teal-600 transition-colors duration-300 mb-4">
                   <Code className="w-8 h-8" />
                 </div>
-                <CardTitle className="tracking-tight text-xl mb-2">Developer Friendly</CardTitle>
+                <CardTitle className="text-lg font-semibold mb-2">Developer Friendly</CardTitle>
               </CardHeader>
               <CardContent className="p-6 pt-0">
                 <p className="text-sm text-gray-600 leading-relaxed">Familiar syntax for Rust developers with powerful tooling and comprehensive documentation.</p>
@@ -807,7 +807,7 @@ impl SRC3 for Contract {
                 <div className="text-emerald-600 group-hover:text-teal-600 transition-colors duration-300 mb-4">
                   <Cpu className="w-8 h-8" />
                 </div>
-                <CardTitle className="tracking-tight text-xl mb-2">Fuel VM Native</CardTitle>
+                <CardTitle className="text-lg font-semibold mb-2">Fuel VM Native</CardTitle>
               </CardHeader>
               <CardContent className="p-6 pt-0">
                 <p className="text-sm text-gray-600 leading-relaxed">Purpose-built for Fuel's high-performance virtual machine with native UTXO support.</p>
@@ -819,46 +819,36 @@ impl SRC3 for Contract {
                 <div className="text-emerald-600 group-hover:text-teal-600 transition-colors duration-300 mb-4">
                   <Wrench className="w-8 h-8" />
                 </div>
-                <CardTitle className="tracking-tight text-xl mb-2">Rich Toolchain</CardTitle>
+                <CardTitle className="text-lg font-semibold mb-2">Rich Toolchain</CardTitle>
               </CardHeader>
               <CardContent className="p-6 pt-0">
                 <p className="text-sm text-gray-600 leading-relaxed">Complete development ecosystem with compiler, debugger, and testing framework.</p>
               </CardContent>
             </Card>
 
-            <Card className="rounded-lg border bg-card text-card-foreground shadow-sm hover:border-emerald-300/30 hover:shadow-lg transition-all duration-300 hover:scale-105 group">
-              <CardHeader className="space-y-0 p-6 pb-4">
-                <div className="text-emerald-600 group-hover:text-teal-600 transition-colors duration-300 mb-4">
-                  <Rocket className="w-8 h-8" />
-                </div>
-                <CardTitle className="tracking-tight text-xl mb-2">Production Ready</CardTitle>
-              </CardHeader>
-              <CardContent className="p-6 pt-0">
-                <p className="text-sm text-gray-600 leading-relaxed">Battle-tested language powering real-world smart contracts on the Fuel network.</p>
-              </CardContent>
-            </Card>
+
           </div>
 
-          <div className="mt-16 text-center">
+          <div className="mt-12 text-center">
             <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full text-sm font-medium">
               <Zap className="w-4 h-4" />
-              Built for the Fuel Virtual Machine
+              Built for the FuelVM
             </div>
           </div>
         </div>
       </section>
 
-       {/* Get Started Section */}
-      <section className="py-20 bg-gradient-to-b from-white to-emerald-50/30">
+      {/* Get Started Section */}
+      <section id="get-started" className="py-16 bg-gradient-to-b from-white to-emerald-50/30">
         <div className="container mx-auto px-4 sm:px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-6">
               <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Get Started</span> in Minutes
             </h2>
-            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">From zero to deployed smart contract in just a few simple steps</p>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">From zero to deployed smart contract in just a few simple steps</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-16">
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-12">
             {/* Step 01 */}
             <Card className="rounded-lg border bg-card text-card-foreground shadow-sm text-center hover:border-emerald-300/30 hover:shadow-lg transition-all duration-300 group">
               <CardHeader className="space-y-0 p-6 pb-4">
@@ -866,7 +856,7 @@ impl SRC3 for Contract {
                   <Download className="w-5 h-5" />
                 </div>
                 <div className="text-sm font-mono text-emerald-600 mb-2">01</div>
-                <CardTitle className="tracking-tight text-xl">Install Sway</CardTitle>
+                <CardTitle className="text-lg font-semibold">Install Sway</CardTitle>
                 <CardDescription>Get up and running with the Sway toolchain</CardDescription>
               </CardHeader>
               <CardContent className="p-6 pt-0">
@@ -884,7 +874,7 @@ impl SRC3 for Contract {
                   <BookOpen className="w-5 h-5" />
                 </div>
                 <div className="text-sm font-mono text-emerald-600 mb-2">02</div>
-                <CardTitle className="tracking-tight text-xl">Learn the Basics</CardTitle>
+                <CardTitle className="text-lg font-semibold">Learn the Basics</CardTitle>
                 <CardDescription>Follow our comprehensive tutorial and examples</CardDescription>
               </CardHeader>
               <CardContent className="p-6 pt-0">
@@ -902,7 +892,7 @@ impl SRC3 for Contract {
                   <Play className="w-5 h-5" />
                 </div>
                 <div className="text-sm font-mono text-emerald-600 mb-2">03</div>
-                <CardTitle className="tracking-tight text-xl">Build & Deploy</CardTitle>
+                <CardTitle className="text-lg font-semibold">Build & Deploy</CardTitle>
                 <CardDescription>Create your first smart contract on Fuel</CardDescription>
               </CardHeader>
               <CardContent className="p-6 pt-0">
@@ -917,7 +907,7 @@ impl SRC3 for Contract {
           <div className="max-w-2xl mx-auto">
             <div className="text-center">
               <h3 className="text-lg font-semibold mb-4">Quick Install</h3>
-              <div className="relative CodeBlock flex flex-row items-center w-full my-[10px] mt-0 rounded-tl-none border-2 border-green-200 py-5 text-lg">
+              <div className="relative CodeBlock flex flex-row items-center w-full my-[10px] mt-0 rounded-tl-none py-5 text-lg">
                 <pre className="bg-[#282A36] text-white w-full rounded-md mx-4 overflow-x-auto">
                   <code className="block px-4 py-3 whitespace-pre">
                     curl -fsSL https://install.fuel.network | sh
@@ -943,32 +933,29 @@ impl SRC3 for Contract {
                   )}
                 </Button>
               </div>
-              <p className="text-sm text-gray-600">Installs Sway, Fuel CLI, and all development tools</p>
+              <p className="text-sm text-gray-600">Installs fuelup, Forc CLI, and all development tools</p>
             </div>
           </div>
         </div>
       </section>
 
-        {/* Playground & Charcoal Section */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-cyan-50 to-blue-50 relative overflow-hidden">
-        <div className="absolute top-0 right-0 text-6xl opacity-20">🏖️</div>
-        <div className="absolute bottom-0 left-0 text-4xl opacity-20">🌊</div>
+      {/* Playground & Charcoal Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-cyan-50 to-blue-50 relative overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 text-gray-900">🏖️ Dive right in</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-4 text-gray-900">Dive right in</h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
               Start building with Sway instantly in your browser, or migrate from Solidity with zero friction.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
-            <Card className="border-cyan-200 hover:shadow-xl transition-all duration-300 bg-white/80 backdrop-blur-sm">
+            <Card className="border-cyan-200 hover:shadow-xl transition-all duration-300 justify-between bg-white/80 backdrop-blur-sm">
               <CardHeader>
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-2xl">🏄‍♂️</span>
-                  <CardTitle className="text-2xl">Sway Playground</CardTitle>
-                </div>
-                <CardDescription className="text-lg">
+
+                <CardTitle className="text-xl font-semibold">Sway Playground</CardTitle>
+
+                <CardDescription className="text-base">
                   A full-featured browser IDE where you can write, deploy, and interact with Sway contracts instantly.
                 </CardDescription>
               </CardHeader>
@@ -977,6 +964,10 @@ impl SRC3 for Contract {
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
                     Write and edit Sway code with syntax highlighting
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                    Inbuilt Charcoal integration, hence input Solidity code and get Sway code.
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <span className="w-2 h-2 bg-teal-500 rounded-full"></span>
@@ -992,7 +983,7 @@ impl SRC3 for Contract {
                   </div>
                 </div>
                 <Button
-                  className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700"
+                  className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-medium"
                   asChild
                 >
                   <Link href="https://www.sway-playground.org/" target="_blank" rel="noopener noreferrer">
@@ -1007,9 +998,9 @@ impl SRC3 for Contract {
               <CardHeader>
                 <div className="flex items-center gap-3 mb-2">
                   <span className="text-2xl">🔄</span>
-                  <CardTitle className="text-2xl">Charcoal Transpiler</CardTitle>
+                  <CardTitle className="text-xl font-semibold">Charcoal Transpiler</CardTitle>
                 </div>
-                <CardDescription className="text-lg">
+                <CardDescription className="text-base">
                   Seamlessly migrate your Solidity contracts to Sway with our intelligent transpiler.
                 </CardDescription>
               </CardHeader>
@@ -1037,7 +1028,7 @@ impl SRC3 for Contract {
                 </div>
                 <Button
                   variant="outline"
-                  className="w-full border-orange-200 hover:bg-orange-50 bg-transparent"
+                  className="w-full border-orange-200 hover:bg-orange-50 bg-transparent text-gray-700 font-medium"
                   asChild
                 >
                   <Link href="https://github.com/ourovoros-io/charcoal" target="_blank" rel="noopener noreferrer">
@@ -1055,11 +1046,11 @@ impl SRC3 for Contract {
       </section>
 
       {/* Forc Section */}
-      <section id="forc" className="py-20 px-4 sm:px-6 lg:px-8 bg-white/50">
+      <section id="forc" className="py-16 px-4 sm:px-6 lg:px-8 bg-white/50">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4 text-gray-900">Forc toolchain</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
               The complete toolkit for Sway development. Build, test, and deploy with ease.
             </p>
           </div>
@@ -1068,7 +1059,7 @@ impl SRC3 for Contract {
             <Card className="border-amber-200">
               <CardHeader>
                 <Settings className="h-8 w-8 text-amber-600 mb-2" />
-                <CardTitle>Build system</CardTitle>
+                <CardTitle className="text-lg font-semibold">Build system</CardTitle>
                 <CardDescription className="mb-4">
                   Cargo-inspired build system with dependency management and workspace support.
                 </CardDescription>
@@ -1086,8 +1077,8 @@ impl SRC3 for Contract {
 
             <Card className="border-orange-200">
               <CardHeader>
-                <Layers className="h-8 w-8 text-orange-600 mb-2" />
-                <CardTitle>Development tools</CardTitle>
+                <Layers className="h-8 w-8 text-amber-600 mb-2" />
+                <CardTitle className="text-lg font-semibold">Development tools</CardTitle>
                 <CardDescription className="mb-4">
                   Integrated testing, formatting, and deployment tools for a smooth developer experience.
                 </CardDescription>
@@ -1123,8 +1114,8 @@ impl SRC3 for Contract {
             </Card>
           </div>
 
-          <div className="mt-16 text-center">
-            <Button size="lg" variant="outline" className="border-amber-200 hover:bg-amber-50 bg-transparent">
+          <div className="mt-12 text-center">
+            <Button size="lg" variant="outline" className="border-amber-200 hover:bg-amber-50 bg-transparent text-gray-700 font-medium">
               <Link href="https://docs.fuel.network/docs/forc/" className="flex items-center" target="_blank" rel="noopener noreferrer">
                 <Settings className="mr-2 h-4 w-4" />
                 Explore Forc toolchain
@@ -1136,39 +1127,62 @@ impl SRC3 for Contract {
       </section>
 
       {/* Libraries Section */}
-      <section id="libraries" className="py-20 px-4 sm:px-6 lg:px-8">
+      <section id="libraries" className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 text-gray-900">Sway libraries</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              A growing ecosystem of reusable libraries to accelerate your development.
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-4 text-gray-900">Essential Sway Libraries</h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Battle-tested libraries and utilities that power the Sway ecosystem.
+              From security primitives to core data structures, these packages accelerate your smart contract development.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {[
-              { name: "Asset", description: "Asset management utilities", downloads: "5.1k" },
-              { name: "Pausable", description: "Emergency stop functionality", downloads: "5.1k" },
-              { name: "Signed Integers", description: "Signed integers for Sway", downloads: "5.1k" },
-              { name: "Reentrancy Guard", description: "Provides an API to check for reentrancy", downloads: "4.8k" },
-              { name: "Merkle", description: "Merkle tree verification", downloads: "3.2k" },
-              { name: "Upgradability", description: "Simple upgradability proxies", downloads: "2.9k" },
+              { name: "Asset", description: "Comprehensive asset management with minting, burning, and transfer controls", downloads: "5.1k", category: "Core" },
+              { name: "Pausable", description: "Emergency stop mechanism to halt contract operations when needed", downloads: "5.1k", category: "Security" },
+              { name: "Signed Integers", description: "Full support for signed integer arithmetic in Sway contracts", downloads: "5.1k", category: "Math" },
+              { name: "Reentrancy Guard", description: "Protection against reentrancy attacks with simple API", downloads: "4.8k", category: "Security" },
+              { name: "Merkle", description: "Efficient Merkle tree verification for whitelists and proofs", downloads: "3.2k", category: "Cryptography" },
+              { name: "Upgradability", description: "Proxy patterns for upgradeable smart contracts", downloads: "2.9k", category: "Infrastructure" },
             ].map((lib, index) => (
-              <Card key={index} className="hover:shadow-md transition-shadow border-gray-200">
+              <Card key={index} className="group hover:shadow-lg hover:border-emerald-300 transition-all duration-200 border-gray-200 bg-white">
                 <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">{lib.name}</CardTitle>
-                    {/* <Badge variant="outline" className="text-xs">
-                      {lib.downloads}
-                    </Badge> */}
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex-1">
+                      <h3 className="text-base font-semibold text-gray-900 group-hover:text-emerald-700 transition-colors mb-1">
+                        {lib.name}
+                      </h3>
+                      <Badge variant="secondary" className="text-xs bg-emerald-100 text-emerald-700 border-emerald-200">
+                        {lib.category}
+                      </Badge>
+                    </div>
                   </div>
-                  <CardDescription className="text-sm">{lib.description}</CardDescription>
+                  <CardDescription className="text-sm text-gray-600 mb-3 line-clamp-2">
+                    {lib.description}
+                  </CardDescription>
                 </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1 text-sm text-gray-500">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+                      </svg>
+                      {lib.downloads}
+                    </div>
+                    <Button variant="ghost" size="sm" className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 h-8 px-3">
+                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                      Docs
+                    </Button>
+                  </div>
+                </CardContent>
               </Card>
             ))}
           </div>
-          <div className="mt-16 text-center">
-            <Button size="lg" variant="outline" className="border-emerald-200 hover:bg-emerald-50 bg-transparent">
+          <div className="mt-12 text-center">
+            <Button size="lg" variant="outline" className="border-emerald-200 hover:bg-emerald-50 bg-transparent text-gray-700 font-medium">
               <Link
                 href="https://docs.fuel.network/docs/sway-libs/"
                 className="flex items-center"
@@ -1185,11 +1199,11 @@ impl SRC3 for Contract {
       </section>
 
       {/* Standards Section */}
-      <section id="standards" className="py-20 px-4 sm:px-6 lg:px-8 bg-white/50">
+      <section id="standards" className="py-16 px-4 sm:px-6 lg:px-8 bg-white/50">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4 text-gray-900">Sway Standards</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
               Community-driven standards for interoperability and best practices.
             </p>
           </div>
@@ -1197,7 +1211,7 @@ impl SRC3 for Contract {
           <div className="grid md:grid-cols-2 gap-8">
             <Card className="border-blue-200">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="text-lg font-semibold flex items-center gap-2">
                   <Package className="h-5 w-5 text-blue-600" />
                   SRC standards
                 </CardTitle>
@@ -1248,7 +1262,7 @@ impl SRC3 for Contract {
                   </Link>
                 </div>
                 <div className="mt-4">
-                  <Button variant="outline" className="w-full bg-transparent" asChild>
+                  <Button variant="outline" className="w-full bg-transparent text-gray-700 font-medium" asChild>
                     <Link
                       href="https://docs.fuel.network/docs/sway-standards/"
                       target="_blank"
@@ -1264,8 +1278,8 @@ impl SRC3 for Contract {
 
             <Card className="border-purple-200">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BookOpen className="h-5 w-5 text-purple-600" />
+                <CardTitle className="text-lg font-semibold flex items-center gap-2">
+                  <BookOpen className="h-5 w-5 text-blue-600" />
                   Style guide
                 </CardTitle>
                 <CardDescription>
@@ -1280,7 +1294,7 @@ impl SRC3 for Contract {
                   <div className="text-sm text-gray-600">• Security best practices</div>
                 </div>
                 <div className="mt-5">
-                  <Button variant="outline" className="w-full bg-transparent" asChild>
+                  <Button variant="outline" className="w-full bg-transparent text-gray-700 font-medium" asChild>
                     <Link
                       href="https://docs.fuel.network/docs/sway/reference/style_guide/"
                       target="_blank"
@@ -1298,26 +1312,26 @@ impl SRC3 for Contract {
       </section>
 
       {/* Registry Section */}
-      <section id="registry" className="py-20 px-4 sm:px-6 lg:px-8">
+      <section id="registry" className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4 text-gray-900">Sway registry</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
               forc.pub - The central registry for Sway packages and libraries.
             </p>
           </div>
 
           <Card className="max-w-4xl mx-auto border-emerald-200">
             <CardHeader className="text-center">
-              <CardTitle className="text-2xl">forc.pub</CardTitle>
-              <CardDescription className="text-lg">
+              <CardTitle className="text-xl font-semibold">forc.pub</CardTitle>
+              <CardDescription className="text-base">
                 Discover, share, and manage Sway packages with the community.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <h3 className="font-semibold text-lg">📥 Install packages</h3>
+                  <h3 className="text-base font-semibold">📥 Install packages</h3>
                   <div className="bg-gray-900 rounded-lg p-4">
                     <code className="text-green-400 text-sm">
                       forc add &lt;package-name&gt;
@@ -1325,7 +1339,7 @@ impl SRC3 for Contract {
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <h3 className="font-semibold text-lg">📤 Publish packages</h3>
+                  <h3 className="text-base font-semibold">📤 Publish packages</h3>
                   <div className="bg-gray-900 rounded-lg p-4">
                     <code className="text-green-400 text-sm">forc publish</code>
                   </div>
@@ -1338,7 +1352,7 @@ impl SRC3 for Contract {
                 <Button
                   onClick={() => window.open("https://forc.pub/", "_blank")}
                   size="lg"
-                  className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700"
+                  className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium"
                 >
                   <ExternalLink className="mr-2 h-4 w-4" />
                   Visit forc.pub
@@ -1354,15 +1368,17 @@ impl SRC3 for Contract {
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <img src="/logo.png" alt="Sway Logo" className="w-8 h-8" />
-                <span className="text-xl font-bold">Sway</span>
+              <div className="flex items-center space-x-3 mb-5">
+                <img src="/logo.png" alt="Sway Logo" className="w-10 h-10 drop-shadow-md" />
+                <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-emerald-400 to-teal-500 bg-clip-text text-white">
+                  Sway
+                </span>
               </div>
-              <p className="text-gray-400">A chill smart contract language for the Fuel ecosystem. 🏖️</p>
+              <p className="text-gray-400">A chill smart contract language for the Fuel ecosystem.</p>
             </div>
 
             <div>
-              <h3 className="font-semibold mb-4">Language</h3>
+              <h3 className="text-base font-semibold mb-4">Language</h3>
               <div className="space-y-2 text-gray-400">
                 <div><Link href="https://docs.fuel.network/docs/sway/" className="flex items-center" target="_blank" rel="noopener noreferrer">Documentation</Link></div>
                 <div><Link href="https://github.com/FuelLabs/sway-examples" className="flex items-center" target="_blank" rel="noopener noreferrer">Examples</Link></div>
@@ -1371,7 +1387,7 @@ impl SRC3 for Contract {
             </div>
 
             <div>
-              <h3 className="font-semibold mb-4">Tools</h3>
+              <h3 className="text-base font-semibold mb-4">Tools</h3>
               <div className="space-y-2 text-gray-400">
                 <div><Link href="https://github.com/FuelLabs/forc" className="flex items-center" target="_blank" rel="noopener noreferrer">Forc CLI</Link></div>
                 <div><Link href="https://docs.fuel.network/docs/sway/lsp/#sway-lsp" className="flex items-center" target="_blank" rel="noopener noreferrer">Sway LSP</Link></div>
@@ -1380,7 +1396,7 @@ impl SRC3 for Contract {
             </div>
 
             <div>
-              <h3 className="font-semibold mb-4">Community</h3>
+              <h3 className="text-base font-semibold mb-4">Community</h3>
               <div className="space-y-2 text-gray-400">
                 <div><Link href="https://docs.fuel.network/docs/forc/" className="flex items-center" target="_blank" rel="noopener noreferrer">GitHub</Link></div>
                 <div><Link href="https://x.com/swaylang" className="flex items-center" target="_blank" rel="noopener noreferrer">X</Link></div>
@@ -1391,9 +1407,10 @@ impl SRC3 for Contract {
 
           <Separator className="my-8 bg-gray-700" />
 
-          <div className="text-center text-gray-400">
-            <p>Built with <img src="/logo.png" alt="Sway Logo" className="inline w-4 h-4 mx-1" /> and ❤️</p>
-
+          <div className="flex justify-center items-center text-gray-400">
+            <p className="flex items-center gap-1 text-sm">
+              Built with <img src="/logo.png" alt="Sway Logo" className="w-4 h-4" /> Sway and crafted with ❤️
+            </p>
           </div>
         </div>
       </footer>
