@@ -514,11 +514,11 @@ impl SRC3 for Contract {
               {/* <div className="inline-flex items-center justify-center lg:justify-start w-24 h-24 mb-6">
                 <img src="/logo.png" alt="Sway Logo" className="w-24 h-24" />
               </div> */}
-              <h1 className="mt-0 text-left text-4xl font-bold leading-tight text-gray-900 md:text-5xl lg:text-6xl xl:text-7xl mb-6">
+              <div className="mt-0 text-left text-2xl font-bold leading-tight text-gray-900 md:text-5xl lg:text-6xl xl:text-5xl mb-6">
                 The Programming <br />
-                Language <span id="typer" className="block text-emerald-600">{typedText}  <span className="blink font-light">|</span></span>
+                Language <span id="typer" className="block text-emerald-600">{typedText}<span className="blink font-light">|</span></span>
 
-              </h1>
+              </div>
               <p className="text-lg text-gray-600 mb-8 max-w-3xl lg:max-w-xl mx-auto lg:mx-0">
                 Sway is a domain-specific language for the FuelVM. Write fast, safe, and efficient smart contracts with Rust-like syntax.
               </p>
@@ -530,7 +530,7 @@ impl SRC3 for Contract {
                   asChild
                 >
                   <Link href="https://docs.fuel.network/docs/sway/" target="_blank" rel="noopener noreferrer">
-                    Get started <ChevronRight className="ml-2 h-4 w-4" />
+                    Start building <ChevronRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
                 <Button size="lg" variant="outline" className="border-emerald-200 hover:bg-emerald-50 bg-transparent text-gray-700 font-medium">
@@ -1312,47 +1312,62 @@ impl SRC3 for Contract {
       </section>
 
       {/* Registry Section */}
-      <section id="registry" className="py-16 px-4 sm:px-6 lg:px-8">
+      <section id="registry" className="py-16 px-4 sm:px-6 lg:px-8 bg-white/50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4 text-gray-900">Sway registry</h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            <h2 className="text-4xl font-bold mb-4 text-gray-900">Sway Registry</h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-4">
+              Add libraries and standards to your project seamlessly from the registry.
+            </p>
+            <p className="text-base text-gray-500 max-w-2xl mx-auto">
               forc.pub - The central registry for Sway packages and libraries.
             </p>
           </div>
 
-          <Card className="max-w-4xl mx-auto border-emerald-200">
-            <CardHeader className="text-center">
-              <CardTitle className="text-xl font-semibold">forc.pub</CardTitle>
-              <CardDescription className="text-base">
+          <Card className="max-w-4xl mx-auto border-emerald-200 shadow-lg">
+            <CardHeader className="text-center pb-6">
+              <CardTitle className="text-2xl font-semibold text-gray-900">forc.pub</CardTitle>
+              <CardDescription className="text-base text-gray-600 mt-2">
                 Discover, share, and manage Sway packages with the community.
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
+            <CardContent className="space-y-8">
+              <div className="grid md:grid-cols-2 gap-8">
                 <div className="space-y-4">
-                  <h3 className="text-base font-semibold">📥 Install packages</h3>
-                  <div className="bg-gray-900 rounded-lg p-4">
-                    <code className="text-green-400 text-sm">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-2xl">📥</span>
+                    <h3 className="text-lg font-semibold text-gray-900">Install packages</h3>
+                  </div>
+                  <div className="bg-gray-900 rounded-lg p-4 border border-gray-700">
+                    <code className="text-green-400 text-sm font-mono">
                       forc add &lt;package-name&gt;
                     </code>
                   </div>
+                  <p className="text-sm text-gray-600">
+                    Add any library or standard to your Sway project instantly.
+                  </p>
                 </div>
                 <div className="space-y-4">
-                  <h3 className="text-base font-semibold">📤 Publish packages</h3>
-                  <div className="bg-gray-900 rounded-lg p-4">
-                    <code className="text-green-400 text-sm">forc publish</code>
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-2xl">📤</span>
+                    <h3 className="text-lg font-semibold text-gray-900">Publish packages</h3>
                   </div>
+                  <div className="bg-gray-900 rounded-lg p-4 border border-gray-700">
+                    <code className="text-green-400 text-sm font-mono">forc publish</code>
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    Share your own libraries with the Sway community.
+                  </p>
                 </div>
               </div>
 
-              <Separator />
+              <Separator className="my-6" />
 
               <div className="text-center">
                 <Button
                   onClick={() => window.open("https://forc.pub/", "_blank")}
                   size="lg"
-                  className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium"
+                  className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium px-8 py-3"
                 >
                   <ExternalLink className="mr-2 h-4 w-4" />
                   Visit forc.pub
