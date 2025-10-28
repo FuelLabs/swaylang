@@ -967,7 +967,7 @@ impl SRC3 for Contract {
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
-                    Inbuilt Charcoal integration, hence input Solidity code and get Sway code.
+                    Built-in Charcoal integration to input Solidity code and get Sway code.
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <span className="w-2 h-2 bg-teal-500 rounded-full"></span>
